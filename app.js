@@ -8,6 +8,7 @@ const thoughtInput = document.getElementById("thought-input");
 const ambientCanvas = document.getElementById("ambient-canvas");
 
 const DURATION_MS = 13 * 60 * 1000;
+const AUTO_START_MS = 12 * 1000;
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 const smoothstep = (value) => value * value * (3 - 2 * value);
 
@@ -17,6 +18,7 @@ let frame = 0;
 let ambientFrame = 0;
 let lastAmbientDraw = 0;
 let thoughtTimer = 0;
+let autoStartTimer = 0;
 let audio = null;
 
 function setVar(name, value) {
@@ -148,6 +150,17 @@ function animateAmbient(time) {
   ambientFrame = requestAnimationFrame(animateAmbient);
 }
 
+function cancelAutoStart() {
+  window.clearTimeout(autoStartTimer);
+}
+
+function queueAutoStart() {
+  cancelAutoStart();
+  autoStartTimer = window.setTimeout(() => {
+    if (!running && window.location.hash !== "#paper") startSequence();
+  }, AUTO_START_MS);
+}
+
 function initAmbient() {
   if (!ambientCanvas) return;
   drawAmbient();
@@ -160,6 +173,7 @@ function initAmbient() {
 
 function startSequence() {
   if (running) return;
+  cancelAutoStart();
   running = true;
   startedAt = performance.now();
   body.classList.add("is-softening");
@@ -261,6 +275,21 @@ function saveThought() {
   thoughtTimer = window.setTimeout(() => closeThought(false), 4200);
 }
 
+function syncPaperVisibility() {
+  const paper = document.getElementById("paper");
+  const visible = window.location.hash === "#paper";
+  paper?.classList.toggle("is-visible", visible);
+  body.classList.toggle("is-reading-paper", visible);
+
+  if (visible) {
+    cancelAutoStart();
+    window.requestAnimationFrame(() => paper?.scrollIntoView({ block: "start" }));
+  } else if (!running) {
+    window.scrollTo(0, 0);
+    queueAutoStart();
+  }
+}
+
 entryButton.addEventListener("click", startSequence);
 audioButton.addEventListener("click", toggleAudio);
 thoughtButton.addEventListener("click", openThought);
@@ -268,6 +297,7 @@ thoughtInput.addEventListener("input", saveThought);
 thoughtInput.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeThought(false);
 });
+window.addEventListener("hashchange", syncPaperVisibility);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -277,3 +307,4 @@ if ("serviceWorker" in navigator) {
 }
 
 initAmbient();
+syncPaperVisibility();

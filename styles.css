@@ -356,6 +356,7 @@ main {
   color: rgba(255, 230, 204, .86);
   box-shadow: none;
   cursor: pointer;
+  touch-action: manipulation;
   opacity: var(--entry-opacity);
   transform: none;
   transition: opacity 2s ease;
@@ -551,10 +552,17 @@ main {
 }
 
 .paper-section {
+  display: none;
+  min-height: 100vh;
   background:
     linear-gradient(180deg, #090605 0, #19100c 72px, #efe4d2 73px, #eee1cd 100%);
   color: #211713;
   padding: 86px 22px 96px;
+}
+
+.paper-section.is-visible,
+.paper-section:target {
+  display: block;
 }
 
 .paper {
