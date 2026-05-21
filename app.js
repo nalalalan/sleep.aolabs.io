@@ -170,6 +170,7 @@ thoughtInput.addEventListener("keydown", (event) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+    const scriptUrl = new URL("service-worker.js", window.location.href);
+    navigator.serviceWorker.register(scriptUrl, { scope: "./" }).catch(() => {});
   });
 }
