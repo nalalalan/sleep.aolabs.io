@@ -1,0 +1,16 @@
+{
+  "name": "sleep-aolabs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A low-stimulation AO Labs sleep transition PWA.",
+  "scripts": {
+    "dev": "npx http-server . -p 3051 -c-1",
+    "serve": "npx http-server . -p 3051 -c-1"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

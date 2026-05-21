@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Sleep icon">
+  <defs>
+    <filter id="lift" x="-35%" y="-35%" width="170%" height="170%">
+      <feDropShadow dx="0" dy="10" stdDeviation="7" flood-color="#160f0c" flood-opacity=".24"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#fff2dc" flood-opacity=".42"/>
+    </filter>
+    <radialGradient id="disc" cx="36%" cy="28%" r="82%">
+      <stop offset="0" stop-color="#fff0dd"/>
+      <stop offset=".55" stop-color="#d99a81"/>
+      <stop offset="1" stop-color="#3a241c"/>
+    </radialGradient>
+    <linearGradient id="blanket" x1="20" y1="28" x2="108" y2="108">
+      <stop stop-color="#f2c38f"/>
+      <stop offset=".5" stop-color="#c77760"/>
+      <stop offset="1" stop-color="#5a3428"/>
+    </linearGradient>
+    <linearGradient id="night" x1="22" y1="18" x2="106" y2="116">
+      <stop stop-color="#3d3028"/>
+      <stop offset="1" stop-color="#0a0706"/>
+    </linearGradient>
+    <linearGradient id="line" x1="20" y1="24" x2="108" y2="112">
+      <stop stop-color="#fff0d7"/>
+      <stop offset="1" stop-color="#91634c"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="58" fill="url(#disc)"/>
+  <g filter="url(#lift)">
+    <path d="M28 74c13-19 35-30 66-32 10 5 16 15 15 28-1 18-15 31-38 35-21 3-38-2-51-15 0-6 3-12 8-16z" fill="url(#night)"/>
+    <path d="M29 78c17 12 36 17 58 15 8-1 15-3 22-6-6 12-18 20-38 23-21 2-39-4-52-18 1-5 4-10 10-14z" fill="url(#blanket)"/>
+    <path d="M44 61c13-8 28-12 45-12" fill="none" stroke="url(#line)" stroke-width="7" stroke-linecap="round" opacity=".56"/>
+    <path d="M40 82c16 8 34 12 55 8" fill="none" stroke="#fff0d7" stroke-width="4" stroke-linecap="round" opacity=".48"/>
+    <path d="M75 29c-9 7-12 18-6 29 5 10 15 15 27 13-6 8-16 12-28 9-15-4-24-17-22-32 2-13 12-22 29-19z" fill="#ffe0a8"/>
+    <circle cx="35" cy="48" r="3.2" fill="#f3c48a" opacity=".55"/>
+    <circle cx="94" cy="37" r="2.4" fill="#f7d5a4" opacity=".62"/>
+  </g>
+</svg>
