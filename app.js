@@ -5,6 +5,7 @@ const audioButton = document.getElementById("audio-button");
 const thoughtShell = document.getElementById("thought-shell");
 const thoughtButton = document.getElementById("thought-button");
 const thoughtInput = document.getElementById("thought-input");
+const ambientCanvas = document.getElementById("ambient-canvas");
 
 const DURATION_MS = 13 * 60 * 1000;
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
@@ -25,6 +26,7 @@ function updateSequence(now = performance.now()) {
 
   const raw = clamp((now - startedAt) / DURATION_MS);
   const eased = smoothstep(raw);
+  const entryFade = clamp(raw / 0.16);
   const late = clamp((raw - 0.22) / 0.56);
   const veryLate = clamp((raw - 0.72) / 0.28);
 
@@ -37,6 +39,7 @@ function updateSequence(now = performance.now()) {
   setVar("--drift-duration", `${(28 + eased * 118).toFixed(1)}s`);
   setVar("--breath-duration", `${(8.5 + eased * 8.5).toFixed(1)}s`);
   setVar("--control-opacity", Math.max(0.025, 1 - smoothstep(late) * 0.975).toFixed(4));
+  setVar("--entry-opacity", Math.max(0.035, 1 - smoothstep(entryFade) * 0.965).toFixed(4));
   setVar("--button-scale", Math.max(0.52, 1 - smoothstep(late) * 0.48).toFixed(4));
   setVar("--thought-opacity", Math.max(0, 1 - smoothstep(clamp((raw - 0.42) / 0.26))).toFixed(4));
 
@@ -55,6 +58,80 @@ function updateSequence(now = performance.now()) {
 
   lowerAudio(0.03 * (1 - eased) + 0.004);
   frame = requestAnimationFrame(updateSequence);
+}
+
+function drawAmbient(time = performance.now()) {
+  if (!ambientCanvas) return;
+  const context = ambientCanvas.getContext("2d", { alpha: false });
+  if (!context) return;
+
+  const rect = ambientCanvas.getBoundingClientRect();
+  const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
+  const width = Math.max(1, Math.floor(rect.width * ratio));
+  const height = Math.max(1, Math.floor(rect.height * ratio));
+
+  if (ambientCanvas.width !== width || ambientCanvas.height !== height) {
+    ambientCanvas.width = width;
+    ambientCanvas.height = height;
+  }
+
+  const shutdown = Number.parseFloat(getComputedStyle(root).getPropertyValue("--shutdown")) || 0;
+  const t = time / 1000;
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  const w = width / ratio;
+  const h = height / ratio;
+
+  const base = context.createLinearGradient(0, 0, w, h);
+  base.addColorStop(0, "#160c08");
+  base.addColorStop(0.46, "#1e100b");
+  base.addColorStop(1, "#050302");
+  context.fillStyle = base;
+  context.fillRect(0, 0, w, h);
+
+  const warm = context.createRadialGradient(w * 0.45, h * 0.44, 0, w * 0.45, h * 0.44, Math.max(w, h) * 0.62);
+  warm.addColorStop(0, `rgba(218, 129, 104, ${0.21 * (1 - shutdown * 0.72)})`);
+  warm.addColorStop(0.42, `rgba(88, 48, 34, ${0.32 * (1 - shutdown * 0.58)})`);
+  warm.addColorStop(1, "rgba(0, 0, 0, 0)");
+  context.fillStyle = warm;
+  context.fillRect(0, 0, w, h);
+
+  context.globalCompositeOperation = "screen";
+  for (let i = 0; i < 16; i += 1) {
+    const y = h * (0.16 + i * 0.052);
+    const amp = h * (0.018 + (i % 4) * 0.003) * (1 - shutdown * 0.5);
+    const phase = t * (0.035 + i * 0.002) + i * 0.7;
+    const line = context.createLinearGradient(0, y - amp, w, y + amp);
+    line.addColorStop(0, "rgba(0,0,0,0)");
+    line.addColorStop(0.24, `rgba(245, 193, 146, ${0.018 + i * 0.001})`);
+    line.addColorStop(0.58, `rgba(211, 118, 96, ${0.024 + i * 0.001})`);
+    line.addColorStop(1, "rgba(0,0,0,0)");
+    context.strokeStyle = line;
+    context.lineWidth = 1.2 + i * 0.055;
+    context.beginPath();
+    context.moveTo(-w * 0.05, y + Math.sin(phase) * amp);
+    for (let x = -w * 0.05; x <= w * 1.05; x += w / 9) {
+      const drift = Math.sin(phase + x * 0.005 + i) * amp;
+      const sag = Math.cos(phase * 0.7 + x * 0.003) * amp * 0.42;
+      context.lineTo(x, y + drift + sag);
+    }
+    context.stroke();
+  }
+
+  context.globalCompositeOperation = "multiply";
+  const shadow = context.createRadialGradient(w * 0.54, h * 0.5, Math.min(w, h) * 0.12, w * 0.54, h * 0.5, Math.max(w, h) * 0.74);
+  shadow.addColorStop(0, "rgba(255,255,255,.9)");
+  shadow.addColorStop(0.56, "rgba(70,42,32,.82)");
+  shadow.addColorStop(1, "rgba(0,0,0,.84)");
+  context.fillStyle = shadow;
+  context.fillRect(0, 0, w, h);
+  context.globalCompositeOperation = "source-over";
+
+}
+
+function initAmbient() {
+  if (!ambientCanvas) return;
+  drawAmbient();
+  window.addEventListener("resize", () => drawAmbient(), { passive: true });
 }
 
 function startSequence() {
@@ -174,3 +251,5 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register(scriptUrl, { scope: "./" }).catch(() => {});
   });
 }
+
+initAmbient();

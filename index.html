@@ -18,7 +18,7 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260521-sleep-pwa">
+  <link rel="stylesheet" href="./styles.css?v=20260521-sleep-material">
 </head>
 <body>
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -39,6 +39,7 @@
   <main>
     <section class="sleep-experience" aria-label="Sleep">
       <div class="sleep-stage" aria-hidden="true">
+        <canvas class="ambient-canvas" id="ambient-canvas"></canvas>
         <div class="field field-a"></div>
         <div class="field field-b"></div>
         <div class="field field-c"></div>
@@ -48,8 +49,7 @@
 
       <div class="sleep-ui">
         <button class="entry-button" id="entry-button" type="button" aria-label="soften">
-          <span class="entry-word">soften</span>
-          <span class="entry-icon" aria-hidden="true"></span>
+          <span class="entry-symbol" aria-hidden="true"><span></span></span>
         </button>
 
         <div class="quiet-controls" aria-label="quiet controls">
@@ -163,6 +163,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260521-sleep-pwa" defer></script>
+  <script src="./app.js?v=20260521-sleep-material" defer></script>
 </body>
 </html>
