@@ -14,6 +14,8 @@ const smoothstep = (value) => value * value * (3 - 2 * value);
 let startedAt = 0;
 let running = false;
 let frame = 0;
+let ambientFrame = 0;
+let lastAmbientDraw = 0;
 let thoughtTimer = 0;
 let audio = null;
 
@@ -82,56 +84,78 @@ function drawAmbient(time = performance.now()) {
   const h = height / ratio;
 
   const base = context.createLinearGradient(0, 0, w, h);
-  base.addColorStop(0, "#160c08");
-  base.addColorStop(0.46, "#1e100b");
-  base.addColorStop(1, "#050302");
+  base.addColorStop(0, "#100806");
+  base.addColorStop(0.38, "#1a0d09");
+  base.addColorStop(0.72, "#0a0504");
+  base.addColorStop(1, "#030201");
   context.fillStyle = base;
   context.fillRect(0, 0, w, h);
 
-  const warm = context.createRadialGradient(w * 0.45, h * 0.44, 0, w * 0.45, h * 0.44, Math.max(w, h) * 0.62);
-  warm.addColorStop(0, `rgba(218, 129, 104, ${0.21 * (1 - shutdown * 0.72)})`);
-  warm.addColorStop(0.42, `rgba(88, 48, 34, ${0.32 * (1 - shutdown * 0.58)})`);
+  const breath = 0.5 + Math.sin(t * 0.58) * 0.5;
+  const warm = context.createRadialGradient(w * 0.39, h * 0.72, 0, w * 0.42, h * 0.72, Math.max(w, h) * (0.58 + breath * 0.025));
+  warm.addColorStop(0, `rgba(225, 135, 102, ${0.23 * (1 - shutdown * 0.72)})`);
+  warm.addColorStop(0.36, `rgba(120, 61, 42, ${0.24 * (1 - shutdown * 0.58)})`);
   warm.addColorStop(1, "rgba(0, 0, 0, 0)");
   context.fillStyle = warm;
   context.fillRect(0, 0, w, h);
 
+  const upper = context.createRadialGradient(w * 0.68, h * 0.28, 0, w * 0.68, h * 0.28, Math.max(w, h) * 0.48);
+  upper.addColorStop(0, `rgba(237, 201, 158, ${0.06 * (1 - shutdown)})`);
+  upper.addColorStop(0.48, `rgba(68, 35, 26, ${0.1 * (1 - shutdown * 0.4)})`);
+  upper.addColorStop(1, "rgba(0, 0, 0, 0)");
+  context.fillStyle = upper;
+  context.fillRect(0, 0, w, h);
+
   context.globalCompositeOperation = "screen";
-  for (let i = 0; i < 16; i += 1) {
-    const y = h * (0.16 + i * 0.052);
-    const amp = h * (0.018 + (i % 4) * 0.003) * (1 - shutdown * 0.5);
-    const phase = t * (0.035 + i * 0.002) + i * 0.7;
+  for (let i = 0; i < 18; i += 1) {
+    const y = h * (0.12 + i * 0.051);
+    const amp = h * (0.012 + (i % 5) * 0.0028) * (1 - shutdown * 0.55);
+    const phase = t * (0.026 + i * 0.0014) + i * 0.73;
     const line = context.createLinearGradient(0, y - amp, w, y + amp);
     line.addColorStop(0, "rgba(0,0,0,0)");
-    line.addColorStop(0.24, `rgba(245, 193, 146, ${0.018 + i * 0.001})`);
-    line.addColorStop(0.58, `rgba(211, 118, 96, ${0.024 + i * 0.001})`);
+    line.addColorStop(0.22, `rgba(245, 195, 147, ${0.012 + i * 0.0007})`);
+    line.addColorStop(0.58, `rgba(214, 122, 96, ${0.017 + i * 0.0008})`);
     line.addColorStop(1, "rgba(0,0,0,0)");
     context.strokeStyle = line;
-    context.lineWidth = 1.2 + i * 0.055;
+    context.lineWidth = 0.85 + i * 0.045;
     context.beginPath();
-    context.moveTo(-w * 0.05, y + Math.sin(phase) * amp);
-    for (let x = -w * 0.05; x <= w * 1.05; x += w / 9) {
-      const drift = Math.sin(phase + x * 0.005 + i) * amp;
-      const sag = Math.cos(phase * 0.7 + x * 0.003) * amp * 0.42;
-      context.lineTo(x, y + drift + sag);
+    context.moveTo(-w * 0.08, y + Math.sin(phase) * amp);
+    for (let x = -w * 0.08; x <= w * 1.08; x += w / 11) {
+      const drift = Math.sin(phase + x * 0.0042 + i) * amp;
+      const sag = Math.cos(phase * 0.72 + x * 0.0028) * amp * 0.5;
+      context.lineTo(x, y + drift + sag + (x / w - 0.5) * amp * 0.7);
     }
     context.stroke();
   }
 
   context.globalCompositeOperation = "multiply";
-  const shadow = context.createRadialGradient(w * 0.54, h * 0.5, Math.min(w, h) * 0.12, w * 0.54, h * 0.5, Math.max(w, h) * 0.74);
-  shadow.addColorStop(0, "rgba(255,255,255,.9)");
-  shadow.addColorStop(0.56, "rgba(70,42,32,.82)");
-  shadow.addColorStop(1, "rgba(0,0,0,.84)");
+  const shadow = context.createRadialGradient(w * 0.42, h * 0.7, Math.min(w, h) * 0.18, w * 0.5, h * 0.56, Math.max(w, h) * 0.76);
+  shadow.addColorStop(0, "rgba(255,255,255,.88)");
+  shadow.addColorStop(0.58, "rgba(68,39,29,.8)");
+  shadow.addColorStop(1, "rgba(0,0,0,.9)");
   context.fillStyle = shadow;
   context.fillRect(0, 0, w, h);
   context.globalCompositeOperation = "source-over";
 
 }
 
+function animateAmbient(time) {
+  if (time - lastAmbientDraw > 120) {
+    drawAmbient(time);
+    lastAmbientDraw = time;
+  }
+
+  ambientFrame = requestAnimationFrame(animateAmbient);
+}
+
 function initAmbient() {
   if (!ambientCanvas) return;
   drawAmbient();
   window.addEventListener("resize", () => drawAmbient(), { passive: true });
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reducedMotion) {
+    ambientFrame = requestAnimationFrame(animateAmbient);
+  }
 }
 
 function startSequence() {
