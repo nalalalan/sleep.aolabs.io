@@ -15,10 +15,15 @@
   <meta property="og:url" content="https://sleep.aolabs.io/">
   <meta property="og:image" content="https://sleep.aolabs.io/icons/icon-512.png">
   <meta name="twitter:card" content="summary">
+  <script>
+    if (location.hostname === "sleep.aolabs.io" && location.protocol === "http:") {
+      location.replace(`https://aolabs.io/sleep/${location.search}${location.hash}`);
+    }
+  </script>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260521-tonight">
+  <link rel="stylesheet" href="./styles.css?v=20260521-tonight2">
 </head>
 <body>
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -163,6 +168,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260521-tonight" defer></script>
+  <script src="./app.js?v=20260521-tonight2" defer></script>
 </body>
 </html>
