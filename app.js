@@ -8,11 +8,14 @@ const thoughtInput = document.getElementById("thought-input");
 const ambientCanvas = document.getElementById("ambient-canvas");
 
 const DURATION_MS = 13 * 60 * 1000;
-const AUTO_START_MS = 12 * 1000;
+const AUTO_START_MS = 7 * 1000;
+const IDLE_RELEASE_AFTER_MS = 35 * 1000;
+const IDLE_RELEASE_FADE_MS = 55 * 1000;
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 const smoothstep = (value) => value * value * (3 - 2 * value);
 
 let startedAt = 0;
+let lastInteractionAt = performance.now();
 let running = false;
 let frame = 0;
 let ambientFrame = 0;
@@ -30,22 +33,26 @@ function updateSequence(now = performance.now()) {
 
   const raw = clamp((now - startedAt) / DURATION_MS);
   const eased = smoothstep(raw);
+  const release = smoothstep(clamp((now - Math.max(startedAt, lastInteractionAt) - IDLE_RELEASE_AFTER_MS) / IDLE_RELEASE_FADE_MS));
   const entryFade = clamp(raw / 0.16);
   const late = clamp((raw - 0.22) / 0.56);
   const veryLate = clamp((raw - 0.72) / 0.28);
 
   setVar("--shutdown", eased.toFixed(4));
-  setVar("--blackout", (Math.pow(eased, 1.85) * 0.88).toFixed(4));
-  setVar("--stage-brightness", (1 - eased * 0.72).toFixed(3));
-  setVar("--stage-contrast", (1 - eased * 0.5).toFixed(3));
-  setVar("--stage-saturation", (1 - eased * 0.46).toFixed(3));
+  setVar("--idle-release", release.toFixed(4));
+  setVar("--blackout", Math.min(0.96, Math.pow(eased, 1.85) * 0.88 + release * 0.58).toFixed(4));
+  setVar("--stage-brightness", Math.max(0.16, 1 - eased * 0.72 - release * 0.38).toFixed(3));
+  setVar("--stage-contrast", Math.max(0.42, 1 - eased * 0.5 - release * 0.22).toFixed(3));
+  setVar("--stage-saturation", Math.max(0.26, 1 - eased * 0.46 - release * 0.24).toFixed(3));
   setVar("--field-blur", `${(3 + eased * 18).toFixed(2)}px`);
   setVar("--drift-duration", `${(28 + eased * 118).toFixed(1)}s`);
   setVar("--breath-duration", `${(8.5 + eased * 8.5).toFixed(1)}s`);
-  setVar("--control-opacity", Math.max(0.025, 1 - smoothstep(late) * 0.975).toFixed(4));
-  setVar("--entry-opacity", Math.max(0.035, 1 - smoothstep(entryFade) * 0.965).toFixed(4));
+  setVar("--control-opacity", Math.max(0, (1 - smoothstep(late) * 0.975) * (1 - release)).toFixed(4));
+  setVar("--entry-opacity", Math.max(0, (1 - smoothstep(entryFade) * 0.965) * (1 - release)).toFixed(4));
   setVar("--button-scale", Math.max(0.52, 1 - smoothstep(late) * 0.48).toFixed(4));
-  setVar("--thought-opacity", Math.max(0, 1 - smoothstep(clamp((raw - 0.42) / 0.26))).toFixed(4));
+  setVar("--thought-opacity", Math.max(0, (1 - smoothstep(clamp((raw - 0.42) / 0.26))) * (1 - release)).toFixed(4));
+
+  body.classList.toggle("is-released", release > 0.55);
 
   if (raw > 0.58) {
     closeThought(true);
@@ -176,9 +183,15 @@ function startSequence() {
   cancelAutoStart();
   running = true;
   startedAt = performance.now();
+  lastInteractionAt = startedAt;
   body.classList.add("is-softening");
   entryButton.setAttribute("aria-label", "softening");
   frame = requestAnimationFrame(updateSequence);
+}
+
+function noteInteraction() {
+  lastInteractionAt = performance.now();
+  body.classList.remove("is-released");
 }
 
 function makeNoiseBuffer(context, seconds = 2) {
@@ -297,6 +310,8 @@ thoughtInput.addEventListener("input", saveThought);
 thoughtInput.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeThought(false);
 });
+document.addEventListener("pointerdown", noteInteraction, { passive: true });
+document.addEventListener("keydown", noteInteraction);
 window.addEventListener("hashchange", syncPaperVisibility);
 
 if ("serviceWorker" in navigator) {

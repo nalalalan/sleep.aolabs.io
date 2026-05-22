@@ -11,6 +11,7 @@
   --near-black: #050302;
   --shutdown: 0;
   --blackout: 0;
+  --idle-release: 0;
   --control-opacity: .86;
   --button-scale: 1;
   --entry-opacity: 1;
@@ -547,8 +548,15 @@ main {
 }
 
 .is-finished .quiet-controls,
-.is-finished .entry-button {
+.is-finished .entry-button,
+.is-released .quiet-controls,
+.is-released .entry-button {
   pointer-events: none;
+}
+
+.is-released .quiet-controls {
+  opacity: 0;
+  filter: blur(8px);
 }
 
 .paper-section {
