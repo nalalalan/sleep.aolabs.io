@@ -349,13 +349,13 @@ main {
 .sleep-focus {
   position: absolute;
   left: 50%;
-  bottom: max(12%, calc(84px + env(safe-area-inset-bottom)));
+  top: 62%;
   z-index: 2;
-  width: min(620px, 82vw);
-  height: min(310px, 36vh);
+  width: min(720px, 84vw);
+  height: min(360px, 42vh);
   pointer-events: none;
   opacity: calc((.78 - (var(--shutdown) * .26)) * (1 - (var(--idle-release) * .48)));
-  transform: translateX(-50%) translateY(calc(var(--drowse) * 18px)) scale(calc(1 + (var(--drowse) * .11)));
+  transform: translate(-50%, calc(-50% + (var(--drowse) * 18px))) scale(calc(1 + (var(--drowse) * .11)));
   filter: blur(calc(var(--drowse) * 7px)) saturate(calc(1 - (var(--drowse) * .24)));
   transition: opacity 2.2s ease, filter 2.2s ease, transform 2.2s ease;
   animation: sleepyFloat var(--breath-duration) ease-in-out infinite;
@@ -369,29 +369,51 @@ main {
 }
 
 .focus-haze {
-  inset: 12% 0 0;
-  border-radius: 52% 48% 47% 53% / 56% 44% 56% 44%;
+  inset: 0;
+  border-radius: 52% 48% 47% 53% / 54% 46% 58% 42%;
   background:
-    radial-gradient(ellipse at 50% 58%, rgba(230, 142, 105, .18), transparent 48%),
-    radial-gradient(ellipse at 42% 40%, rgba(248, 210, 165, .08), transparent 32%),
-    radial-gradient(ellipse at 69% 78%, rgba(56, 24, 18, .24), transparent 52%);
-  filter: blur(18px);
-  opacity: calc(.78 - (var(--drowse) * .42));
+    radial-gradient(ellipse at 50% 58%, rgba(230, 142, 105, .24), transparent 50%),
+    radial-gradient(ellipse at 42% 39%, rgba(248, 210, 165, .11), transparent 34%),
+    radial-gradient(ellipse at 70% 78%, rgba(56, 24, 18, .28), transparent 54%);
+  filter: blur(22px);
+  opacity: calc(.9 - (var(--drowse) * .48));
 }
 
 .focus-lid {
   left: 50%;
-  bottom: 38%;
-  width: min(430px, 58vw);
-  height: 2px;
-  border-radius: 999px;
+  top: 54%;
+  width: min(520px, 66vw);
+  height: min(74px, 9vh);
+  border-radius: 50%;
   background:
-    linear-gradient(90deg, transparent, rgba(255, 224, 188, .17) 24%, rgba(218, 134, 98, .2) 52%, transparent 86%);
+    radial-gradient(ellipse at 50% 58%, rgba(255, 218, 180, .09), transparent 56%),
+    linear-gradient(90deg, transparent, rgba(255, 224, 188, .2) 24%, rgba(218, 134, 98, .23) 52%, transparent 86%);
   box-shadow:
     0 0 24px rgba(226, 139, 101, .08),
     0 18px 42px rgba(50, 19, 15, .22);
   opacity: calc(.74 - (var(--drowse) * .42));
-  transform: translateX(-50%) scaleX(calc(1 - (var(--drowse) * .36)));
+  transform: translate(-50%, -50%) scaleX(calc(1 - (var(--drowse) * .3))) scaleY(calc(1 - (var(--drowse) * .18)));
+}
+
+.focus-lid::before,
+.focus-lid::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 228, 193, .12), rgba(220, 135, 101, .11), transparent);
+  transform: translateX(-50%);
+}
+
+.focus-lid::before {
+  top: 32%;
+  width: 76%;
+}
+
+.focus-lid::after {
+  bottom: 29%;
+  width: 62%;
 }
 
 .sleep-z {
@@ -405,23 +427,23 @@ main {
 }
 
 .sleep-z-a {
-  left: 39%;
-  bottom: 42%;
+  left: 38%;
+  top: 38%;
   font-size: clamp(18px, 4vw, 34px);
   animation-delay: -2s;
 }
 
 .sleep-z-b {
   left: 50%;
-  bottom: 55%;
+  top: 26%;
   font-size: clamp(15px, 3.2vw, 27px);
   opacity: calc((.22 - (var(--drowse) * .13)) * (1 - var(--idle-release)));
   animation-delay: -6s;
 }
 
 .sleep-z-c {
-  left: 58%;
-  bottom: 68%;
+  left: 59%;
+  top: 18%;
   font-size: clamp(12px, 2.5vw, 21px);
   opacity: calc((.15 - (var(--drowse) * .1)) * (1 - var(--idle-release)));
   animation-delay: -9s;
@@ -855,10 +877,10 @@ figcaption {
 @keyframes sleepyFloat {
   0%,
   100% {
-    transform: translateX(-50%) translateY(calc(var(--drowse) * 18px)) scale(calc(.985 + (var(--drowse) * .08)));
+    transform: translate(-50%, calc(-50% + (var(--drowse) * 18px))) scale(calc(.985 + (var(--drowse) * .08)));
   }
   50% {
-    transform: translateX(-50%) translateY(calc(-8px + (var(--drowse) * 22px))) scale(calc(1.025 + (var(--drowse) * .1)));
+    transform: translate(-50%, calc(-50% - 8px + (var(--drowse) * 22px))) scale(calc(1.025 + (var(--drowse) * .1)));
   }
 }
 
@@ -921,9 +943,26 @@ figcaption {
   }
 
   .sleep-focus {
-    bottom: max(15%, calc(88px + env(safe-area-inset-bottom)));
-    width: min(360px, 84vw);
-    height: min(260px, 34vh);
+    top: 58%;
+    width: min(390px, 94vw);
+    height: min(350px, 44vh);
+  }
+
+  .focus-lid {
+    width: min(330px, 78vw);
+    height: min(92px, 11vh);
+  }
+
+  .sleep-z-a {
+    font-size: clamp(22px, 7vw, 32px);
+  }
+
+  .sleep-z-b {
+    font-size: clamp(18px, 5.5vw, 25px);
+  }
+
+  .sleep-z-c {
+    font-size: clamp(14px, 4.4vw, 20px);
   }
 
   .mechanism-grid,
