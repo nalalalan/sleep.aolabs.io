@@ -1,4 +1,4 @@
-const CACHE_NAME = "sleep-aolabs-20260521-v7";
+const CACHE_NAME = "sleep-aolabs-20260522-v8";
 
 const APP_SHELL = [
   "./",

@@ -23,7 +23,7 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260521-release">
+  <link rel="stylesheet" href="./styles.css?v=20260522-drowsy">
 </head>
 <body>
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -53,6 +53,14 @@
       </div>
 
       <div class="sleep-ui">
+        <div class="sleep-focus" aria-hidden="true">
+          <span class="focus-haze"></span>
+          <span class="focus-lid"></span>
+          <span class="sleep-z sleep-z-a">z</span>
+          <span class="sleep-z sleep-z-b">z</span>
+          <span class="sleep-z sleep-z-c">z</span>
+        </div>
+
         <button class="entry-button" id="entry-button" type="button" aria-label="soften">
           <span class="entry-symbol" aria-hidden="true"><span></span></span>
         </button>
@@ -84,7 +92,7 @@
 
         <section>
           <h2>Abstract</h2>
-          <p>Sleep is a single-page progressive web application designed for the realistic bedtime condition in which phone removal is not a reliable first move. Instead of delivering sleep hygiene advice, meditation prompts, streaks, or self-improvement feedback, the interface behaves as a gradually disappearing transition object: it provides a small amount of warm sensory input, then progressively lowers light, contrast, movement, novelty, interaction, and reward density over a 13-minute sequence, with an idle release path that moves faster toward near-black when left alone.</p>
+          <p>Sleep is a single-page progressive web application designed for the realistic bedtime condition in which phone removal is not a reliable first move. Instead of delivering sleep hygiene advice, meditation prompts, streaks, or self-improvement feedback, the interface behaves as a gradually disappearing transition object: it gives the user one soft focal object to watch, then progressively lowers light, contrast, movement, novelty, interaction, and reward density over a 13-minute sequence.</p>
           <p>The design translates established sleep-psychology principles into environmental behavior rather than visible instruction. Its hidden mechanism combines stimulus-control logic, cognitive arousal reduction, future-thought offloading, slow respiratory pacing, circadian light minimization, sensory regulation, and progressive extinction of interaction rewards. The central hypothesis is that a phone surface can be made less reinforcing without becoming so boring that it provokes boredom-anxiety in users who seek stimulation at night.</p>
         </section>
 
@@ -116,7 +124,8 @@
           <ol class="principles">
             <li><strong>No coaching surface.</strong> The transition experience contains no sleep instructions, moralizing, affirmations, dashboards, streaks, or progress feedback.</li>
             <li><strong>Enough sensory input to avoid threat-level boredom.</strong> The visual field starts warm, tactile, and slowly moving, then removes novelty gradually rather than abruptly.</li>
-            <li><strong>Interaction decay.</strong> Controls begin available, then shrink, fade, and disappear during idle use so the app stops rewarding continued manipulation or staring.</li>
+            <li><strong>Drowsy focal path.</strong> The sleep surface gives one slow, dim focal object that can be watched without reading, choosing, or tracking performance.</li>
+            <li><strong>Interaction decay.</strong> Controls begin available, then shrink and fade so the app stops rewarding continued manipulation while preserving the soft focal path.</li>
             <li><strong>Light discipline.</strong> The palette stays dark and warm, and the sequence trends toward near-black rather than blue-white alerting light.</li>
             <li><strong>Single offload point.</strong> A tiny thought well permits future-oriented cognitive offloading without creating a journal, task manager, feed, or review loop.</li>
             <li><strong>Non-clinical identity.</strong> The artifact is a comforting object, not a therapist, coach, tracker, or wellness brand.</li>
@@ -168,6 +177,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260521-release" defer></script>
+  <script src="./app.js?v=20260522-drowsy" defer></script>
 </body>
 </html>

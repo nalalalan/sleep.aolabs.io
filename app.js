@@ -8,9 +8,9 @@ const thoughtInput = document.getElementById("thought-input");
 const ambientCanvas = document.getElementById("ambient-canvas");
 
 const DURATION_MS = 13 * 60 * 1000;
-const AUTO_START_MS = 7 * 1000;
-const IDLE_RELEASE_AFTER_MS = 35 * 1000;
-const IDLE_RELEASE_FADE_MS = 55 * 1000;
+const AUTO_START_MS = 4 * 1000;
+const IDLE_RELEASE_AFTER_MS = 5 * 60 * 1000;
+const IDLE_RELEASE_FADE_MS = 5 * 60 * 1000;
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 const smoothstep = (value) => value * value * (3 - 2 * value);
 
@@ -39,6 +39,7 @@ function updateSequence(now = performance.now()) {
   const veryLate = clamp((raw - 0.72) / 0.28);
 
   setVar("--shutdown", eased.toFixed(4));
+  setVar("--drowse", smoothstep(clamp(raw / 0.62)).toFixed(4));
   setVar("--idle-release", release.toFixed(4));
   setVar("--blackout", Math.min(0.96, Math.pow(eased, 1.85) * 0.88 + release * 0.58).toFixed(4));
   setVar("--stage-brightness", Math.max(0.16, 1 - eased * 0.72 - release * 0.38).toFixed(3));
