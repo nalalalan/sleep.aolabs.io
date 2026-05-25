@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
         endpointInput = EditText(this).apply {
             hint = "endpoint"
             singleLine = true
-            setText("https://sleep-web-production.up.railway.app/api/ingest/sleep-sessions")
+            setText("https://sleep.aolabs.io/api/ingest/sleep-sessions")
         }
         root.addView(endpointInput)
 

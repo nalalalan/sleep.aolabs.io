@@ -23,7 +23,7 @@ The bridge needs a real Android phone. Health Connect and Samsung Health Data SD
 2. Health Connect: allow Samsung Health to write Sleep.
 3. Install this bridge on the same Android phone.
 4. In the bridge, enter:
-   - endpoint: `https://sleep-web-production.up.railway.app/api/ingest/sleep-sessions`
+   - endpoint: `https://sleep.aolabs.io/api/ingest/sleep-sessions`
    - token: Railway `SLEEP_INGEST_TOKEN`
 5. Grant sleep permission.
 6. Tap sync after waking, once Samsung Health has the night's sleep visible.

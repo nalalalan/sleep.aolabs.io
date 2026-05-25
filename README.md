@@ -10,7 +10,7 @@ Samsung Health on the paired phone writes completed Galaxy Watch sleep to Health
 
 The website itself cannot directly read Samsung Health or the watch. It only reads the Sleep API.
 
-Current API fallback: `https://sleep-web-production.up.railway.app`
+Current API: `https://sleep.aolabs.io`
 
 ## Local
 

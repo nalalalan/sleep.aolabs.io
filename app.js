@@ -19,9 +19,9 @@ const AUTO_START_MS = 4 * 1000;
 const IDLE_RELEASE_AFTER_MS = 5 * 60 * 1000;
 const IDLE_RELEASE_FADE_MS = 5 * 60 * 1000;
 const READ_TOKEN_KEY = "sleep.readToken";
-const LIVE_API_BASE = "https://sleep-web-production.up.railway.app";
+const LIVE_API_BASE = "https://sleep.aolabs.io";
 const configuredApiBase = document.querySelector("meta[name='sleep-api-base']")?.content || "";
-const API_BASE = (configuredApiBase || (/^(sleep\.aolabs\.io|aolabs\.io)$/.test(location.hostname) ? LIVE_API_BASE : "")).replace(/\/$/, "");
+const API_BASE = (configuredApiBase || (location.hostname === "aolabs.io" ? LIVE_API_BASE : "")).replace(/\/$/, "");
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 const smoothstep = (value) => value * value * (3 - 2 * value);
 
