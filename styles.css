@@ -38,6 +38,10 @@ html {
   background: var(--bg);
 }
 
+html:has(body.is-reading-record) {
+  background: #151815;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -1562,8 +1566,15 @@ figcaption {
 }
 
 .is-reading-record {
-  background: #f6f7f4;
-  color: #1f2328;
+  min-height: 100vh;
+  display: flow-root;
+  background:
+    radial-gradient(circle at 84% 20%, rgba(168, 222, 225, .20), transparent 32%),
+    linear-gradient(90deg, rgba(4, 8, 9, .26) 0%, rgba(4, 8, 9, .12) 42%, rgba(4, 8, 9, .64) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(3, 7, 8, .56)),
+    url("./assets/sleep-background.jpg") center center / cover fixed no-repeat,
+    #0f1618;
+  color: #edf8f3;
 }
 
 .is-reading-record::before {
@@ -1571,16 +1582,7 @@ figcaption {
 }
 
 .is-reading-record .suite-topbar {
-  position: static;
-  inset: auto;
-  min-height: 56px;
-  padding: 10px 18px;
-  border-bottom: 1px solid #d9ddd6;
-  background: #ffffff;
-  color: #30363d;
-  opacity: 1;
-  filter: none;
-  transform: none;
+  display: none;
 }
 
 .is-reading-record .suite-topbar::after {
@@ -1593,42 +1595,56 @@ figcaption {
   height: auto;
   overflow: visible;
   clip: auto;
-  color: #30363d;
+  color: #f8faf4;
   white-space: nowrap;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, .42);
 }
 
 .is-reading-record .suite-ao-home img,
 .is-reading-record .suite-app-mark {
-  opacity: .82;
-  filter: none;
+  opacity: .9;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .18));
 }
 
 .is-reading-record .suite-topbar-actions a {
-  color: #30363d;
+  color: #f8faf4;
+  background: rgba(255, 255, 255, .16);
 }
 
 .is-reading-record .record-section {
-  min-height: calc(100vh - 56px);
-  padding: 34px 18px 72px;
-  background: #f6f7f4;
-  color: #1f2328;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: clamp(34px, 7vh, 72px) clamp(18px, 5.4vw, 78px) 72px;
+  background: transparent;
+  color: #edf8f3;
 }
 
 .is-reading-record .record-shell {
-  width: min(1060px, 100%);
+  width: min(536px, 100%);
+  margin: 0;
+  padding: clamp(20px, 2.9vw, 30px);
+  border: 1px solid rgba(219, 246, 239, .26);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(9, 22, 25, .83), rgba(17, 41, 45, .70)),
+    linear-gradient(180deg, rgba(211, 239, 232, .08), rgba(0, 0, 0, .08));
+  box-shadow: 0 30px 110px rgba(0, 0, 0, .38);
+  backdrop-filter: blur(18px) saturate(1.18);
 }
 
 .is-reading-record .record-head {
-  gap: 4px;
+  gap: 6px;
   margin-bottom: 18px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #d9ddd6;
+  border-bottom: 1px solid rgba(219, 246, 239, .16);
 }
 
 .is-reading-record .record-head h1 {
-  color: #111418;
-  font-size: clamp(30px, 4vw, 42px);
-  line-height: 1.05;
+  color: #f5fbf6;
+  font-size: clamp(34px, 4.4vw, 48px);
+  line-height: 1.02;
   letter-spacing: 0;
 }
 
@@ -1637,7 +1653,7 @@ figcaption {
 .is-reading-record .record-boundary p,
 .is-reading-record .record-note,
 .is-reading-record .record-meta {
-  color: #5c6470;
+  color: rgba(225, 243, 238, .70);
 }
 
 .is-reading-record .record-token {
@@ -1645,29 +1661,29 @@ figcaption {
 }
 
 .is-reading-record .record-token input {
-  border-color: #cdd3ca;
-  background: #fff;
-  color: #1f2328;
+  border-color: rgba(219, 246, 239, .22);
+  background: rgba(246, 252, 249, .92);
+  color: #132025;
 }
 
 .is-reading-record .record-token input:focus {
-  border-color: #68717d;
+  border-color: rgba(161, 218, 226, .78);
 }
 
 .is-reading-record .record-token button,
 .is-reading-record .record-toolbar button,
 .is-reading-record .bridge-download {
-  border-color: #cdd3ca;
-  border-radius: 4px;
-  background: #fff;
-  color: #1f2328;
+  border-color: rgba(219, 246, 239, .22);
+  border-radius: 6px;
+  background: rgba(238, 248, 244, .92);
+  color: #132025;
   font-weight: 650;
 }
 
 .is-reading-record .record-token button:hover,
 .is-reading-record .record-toolbar button:hover,
 .is-reading-record .bridge-download:hover {
-  background: #eef1ec;
+  background: #f8fffb;
 }
 
 .is-reading-record .record-toolbar {
@@ -1679,29 +1695,30 @@ figcaption {
 .is-reading-record .record-summary,
 .is-reading-record .record-chart,
 .is-reading-record .record-list {
-  border-color: #d9ddd6;
-  border-radius: 4px;
-  background: #fff;
+  border-color: rgba(219, 246, 239, .16);
+  border-radius: 8px;
+  background: rgba(238, 248, 244, .11);
 }
 
 .is-reading-record .bridge-install {
+  grid-template-columns: 1fr;
   margin-bottom: 18px;
   padding: 14px;
 }
 
 .is-reading-record .bridge-install h2 {
-  color: #111418;
+  color: #f5fbf6;
 }
 
 .is-reading-record .bridge-install p {
-  color: #5c6470;
+  color: rgba(225, 243, 238, .72);
 }
 
 .is-reading-record .bridge-steps span {
-  border-color: #d9ddd6;
-  border-radius: 4px;
-  color: #4d5560;
-  background: #f8f9f7;
+  border-color: rgba(219, 246, 239, .15);
+  border-radius: 6px;
+  color: rgba(225, 243, 238, .76);
+  background: rgba(255, 255, 255, .08);
 }
 
 .is-reading-record .record-boundary {
@@ -1712,7 +1729,7 @@ figcaption {
 .is-reading-record .record-boundary strong,
 .is-reading-record .record-chart h2,
 .is-reading-record .record-list h2 {
-  color: #111418;
+  color: #f5fbf6;
 }
 
 .is-reading-record .record-content {
@@ -1726,11 +1743,11 @@ figcaption {
 .is-reading-record .record-summary > div {
   min-height: 104px;
   padding: 16px;
-  border-left-color: #e4e7e0;
+  border-left-color: rgba(219, 246, 239, .14);
 }
 
 .is-reading-record .record-value {
-  color: #111418;
+  color: #f5fbf6;
   font-size: clamp(28px, 3.4vw, 40px);
 }
 
@@ -1741,60 +1758,73 @@ figcaption {
 .is-reading-record .record-label,
 .is-reading-record .night-header > span,
 .is-reading-record .night-date {
-  color: #68717d;
+  color: rgba(196, 224, 219, .68);
 }
 
 .is-reading-record .night-bar-stack {
-  border-radius: 3px;
-  background: #e7ebe5;
+  border-radius: 4px;
+  background: rgba(236, 248, 244, .18);
 }
 
 .is-reading-record .night-segment.sleeping,
 .is-reading-record .night-segment.light {
-  background: #7b91a8;
+  background: #8fb7c8;
 }
 
 .is-reading-record .night-segment.deep {
-  background: #465a73;
+  background: #4d6f89;
 }
 
 .is-reading-record .night-segment.rem {
-  background: #9aa56a;
+  background: #b8c77a;
 }
 
 .is-reading-record .night-segment.awake,
 .is-reading-record .night-segment.outOfBed {
-  background: #c9ced6;
+  background: #d7e1e1;
 }
 
 .is-reading-record .night-segment.unknown {
-  background: #d8ddd5;
+  background: rgba(216, 225, 221, .62);
 }
 
 .is-reading-record .night-row {
-  border-top-color: #e4e7e0;
+  border-top-color: rgba(219, 246, 239, .14);
 }
 
 .is-reading-record .night-row > span {
-  color: #30363d;
+  color: rgba(239, 250, 246, .86);
 }
 
 .is-reading-record .night-row > span:not(:first-child) {
-  border-left-color: #e4e7e0;
+  border-left-color: rgba(219, 246, 239, .14);
 }
 
 .is-reading-record .night-row .night-primary {
-  color: #111418;
+  color: #f5fbf6;
 }
 
 @media (max-width: 760px) {
-  .is-reading-record .suite-topbar {
-    min-height: 52px;
-    padding: 8px 12px;
+  .is-reading-record {
+    background:
+      linear-gradient(180deg, rgba(8, 12, 13, .02), rgba(8, 12, 13, .72)),
+      url("./assets/sleep-background.jpg") center top / 100vw auto no-repeat,
+      #0f1618;
   }
 
   .is-reading-record .record-section {
-    padding: 24px 12px 48px;
+    display: block;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 45vh 18px 42px;
+  }
+
+  .is-reading-record .record-shell {
+    width: 100%;
+    max-width: calc(100vw - 36px);
+    min-width: 0;
+    margin: 0 auto;
+    padding: 16px;
   }
 
   .is-reading-record .record-token,
@@ -1818,7 +1848,7 @@ figcaption {
   .is-reading-record .record-summary > div,
   .is-reading-record .record-summary > div:first-child {
     border-left: 0;
-    border-top: 1px solid #e4e7e0;
+    border-top: 1px solid rgba(44, 50, 45, .12);
   }
 
   .is-reading-record .record-summary > div:first-child {

@@ -1,10 +1,11 @@
-const CACHE_NAME = "sleep-aolabs-20260525-boring-log-v1";
+const CACHE_NAME = "sleep-aolabs-20260525-photo-log-v1";
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./assets/sleep-background.jpg",
   "./manifest.webmanifest",
   "./icon.svg",
   "./marks/ao-ink.svg",
