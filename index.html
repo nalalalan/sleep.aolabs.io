@@ -140,7 +140,7 @@
       <article class="paper">
         <p class="paper-kicker">design research scaffold</p>
         <h1 id="paper-title">Sleep: a low-stimulation digital transition object with consented wearable outcome capture</h1>
-        <p class="paper-meta">AO Labs, 2026. This section documents the mechanism, Health Connect data path, and study plan; the live transition surface intentionally avoids coaching language.</p>
+        <p class="paper-meta">AO Labs, 2026. This section documents the mechanism, Health Connect data path, and study plan; the record surface keeps sleep data private while the transition surface intentionally avoids coaching language.</p>
 
         <section>
           <h2>Abstract</h2>
@@ -186,14 +186,14 @@
 
         <section>
           <h2>Experimental Protocol Proposal</h2>
-          <p>A first evaluation should use a two-week within-subject alternating-night design. Participants would compare Sleep against their usual phone behavior during the final 20 minutes before intended sleep. The transition surface remains non-coaching; a separate consented record can receive completed sleep sessions after wake through Health Connect.</p>
+          <p>A first evaluation should use a two-week within-subject alternating-night design. Participants would compare Sleep against their usual phone behavior during the final 20 minutes before intended sleep. The transition surface remains non-coaching; the consented record can receive completed sleep sessions after wake through Health Connect.</p>
           <p>Primary comparison nights should be balanced by weekday, caffeine/alcohol status, and intended bedtime. A follow-up n-of-1 protocol could test whether the same user shows earlier phone-touch cessation, lower pre-sleep arousal ratings, shorter subjective sleep-onset latency, and changed wearable-derived sleep duration after Sleep nights.</p>
         </section>
 
         <section>
           <h2>Health Connect Data Path</h2>
           <p>Galaxy Watch sleep is processed by Samsung Health on the paired phone after wake. When Samsung Health synchronization with Health Connect is enabled, a private Android bridge with read permission for sleep sessions can read completed Health Connect records and send session timing and stage intervals to the Sleep API.</p>
-          <p>The public transition surface does not receive raw phone or watch access. Sleep records remain behind a read token, and ingestion requires a separate bridge token. The record is a longitudinal outcome surface, not a diagnosis, treatment claim, or medical device.</p>
+          <p>The website does not receive raw phone or watch access. Sleep records remain behind a read token, and ingestion requires a separate bridge token. The record is a longitudinal outcome surface, not a diagnosis, treatment claim, or medical device.</p>
         </section>
 
         <section>
