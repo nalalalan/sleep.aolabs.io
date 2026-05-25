@@ -1378,6 +1378,16 @@ figcaption {
     padding: 76px 14px 64px;
   }
 
+  .record-token {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .record-token input,
+  .record-token button {
+    width: 100%;
+  }
+
   .bridge-install {
     grid-template-columns: 1fr;
   }
