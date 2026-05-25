@@ -1816,12 +1816,12 @@ figcaption {
     display: block;
     justify-content: center;
     min-height: 100vh;
-    padding: 45vh 18px 42px;
+    padding: 45vh 28px 42px;
   }
 
   .is-reading-record .record-shell {
-    width: 100%;
-    max-width: calc(100vw - 36px);
+    width: calc(100vw - 56px) !important;
+    max-width: none;
     min-width: 0;
     margin: 0 auto;
     padding: 16px;
