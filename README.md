@@ -4,6 +4,8 @@ Sleep is an AO Labs low-stimulation transition PWA with a private sleep-record r
 
 The transition surface stays minimal and mostly nonverbal. The record surface lives at `/#record` and only reads completed sleep sessions that a consented Android bridge sends after wake.
 
+Android bridge download: `https://sleep.aolabs.io/downloads/sleep-bridge.apk`
+
 ## Data path
 
 Samsung Health on the paired phone writes completed Galaxy Watch sleep to Health Connect after the watch data has transferred and processed. The Android bridge in `connectors/health-connect-bridge` requests Health Connect sleep permission, reads `SleepSessionRecord` records, and posts timing plus stage intervals to the Sleep API.

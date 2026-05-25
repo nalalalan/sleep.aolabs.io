@@ -29,6 +29,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 class MainActivity : ComponentActivity() {
+    private val healthConnectProviderPackage = "com.google.android.apps.healthdata"
     private val permissions = setOf(HealthPermission.getReadPermission(SleepSessionRecord::class))
     private val requestPermissions = registerForActivityResult(
         PermissionController.createRequestPermissionResultContract()
@@ -67,14 +68,14 @@ class MainActivity : ComponentActivity() {
 
         endpointInput = EditText(this).apply {
             hint = "endpoint"
-            singleLine = true
+            setSingleLine(true)
             setText("https://sleep.aolabs.io/api/ingest/sleep-sessions")
         }
         root.addView(endpointInput)
 
         tokenInput = EditText(this).apply {
             hint = "bridge token"
-            singleLine = true
+            setSingleLine(true)
         }
         root.addView(tokenInput)
 
@@ -123,7 +124,7 @@ class MainActivity : ComponentActivity() {
             HealthConnectClient.SDK_AVAILABLE -> setStatus("Health Connect available.")
             HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED -> {
                 setStatus("Health Connect update required.")
-                val uri = Uri.parse("market://details?id=${HealthConnectClient.DEFAULT_PROVIDER_PACKAGE_NAME}")
+                val uri = Uri.parse("market://details?id=$healthConnectProviderPackage")
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
             else -> setStatus("Health Connect unavailable on this phone.")

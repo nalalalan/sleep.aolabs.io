@@ -2,6 +2,8 @@
 
 Android bridge for sending Samsung Health / Galaxy Watch sleep records to `sleep.aolabs.io`.
 
+Download the current debug APK from `https://sleep.aolabs.io/downloads/sleep-bridge.apk`.
+
 ## What it does
 
 - Requests Health Connect `READ_SLEEP`.

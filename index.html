@@ -23,7 +23,7 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260525-healthconnect">
+  <link rel="stylesheet" href="./styles.css?v=20260525-bridge-install">
 </head>
 <body>
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -38,6 +38,7 @@
     </div>
     <nav class="suite-topbar-actions" aria-label="sleep navigation">
       <a href="#record" aria-label="sleep record"><span class="record-icon" aria-hidden="true"></span></a>
+      <a href="./downloads/sleep-bridge.apk" download aria-label="download Android bridge"><span class="bridge-icon" aria-hidden="true"></span></a>
       <a href="#paper" aria-label="paper"><span class="paper-icon" aria-hidden="true"></span></a>
     </nav>
   </header>
@@ -100,6 +101,20 @@
         <div class="record-toolbar">
           <button id="record-refresh" type="button">Refresh</button>
           <span id="record-updated">No records loaded.</span>
+        </div>
+
+        <div class="bridge-install" id="bridge-install">
+          <div class="bridge-install-copy">
+            <h2>Android bridge</h2>
+            <p>Samsung Health -> Health Connect -> Sleep.</p>
+          </div>
+          <a class="bridge-download" href="./downloads/sleep-bridge.apk" download>Download APK</a>
+          <div class="bridge-steps" aria-label="bridge setup">
+            <span>Install on Android phone</span>
+            <span>Grant Sleep permission</span>
+            <span>Paste bridge token</span>
+            <span>Sync last 14 days</span>
+          </div>
         </div>
 
         <div class="record-content" id="record-content" data-state="loading">
