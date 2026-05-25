@@ -356,9 +356,9 @@ function stageTotal(stageMinutes, keys) {
 function renderRecordBoundary(message, detail = "") {
   if (!recordContent) return;
   recordContent.innerHTML = `
-    <div class="record-boundary">
+    <div class="record-boundary" role="status">
       <strong>${message}</strong>
-      <p>${detail || "Samsung Health writes completed Galaxy Watch sleep to Health Connect after wake. The Android bridge sends completed sessions to this record."}</p>
+      <p>${detail || "No synced nights yet. After Samsung Health writes a completed Galaxy Watch sleep session to Health Connect, the Android bridge sends it here."}</p>
     </div>
   `;
 }
@@ -407,7 +407,7 @@ function renderRecordSummary(data) {
   recordContent.innerHTML = `
     <div class="record-summary">
       <div>
-        <span class="record-label">Latest night</span>
+        <span class="record-label">Latest sleep</span>
         <span class="record-value">${formatMinutes(latest.durationMinutes)}</span>
         <span class="record-meta">${formatNightDate(latest.sleepDate)} · ${formatDateTime(latest.startTime)} to ${formatDateTime(latest.endTime)}</span>
       </div>
@@ -423,13 +423,8 @@ function renderRecordSummary(data) {
       </div>
     </div>
 
-    <div class="record-chart">
-      <h2>Nightly duration</h2>
-      <div class="night-bars">${bars}</div>
-    </div>
-
     <div class="record-list">
-      <h2>Recent nights</h2>
+      <h2>Daily sleep hours</h2>
       <div class="night-row night-header">
         <span>Date</span>
         <span>Total</span>
@@ -439,6 +434,11 @@ function renderRecordSummary(data) {
         <span>REM</span>
       </div>
       ${rows}
+    </div>
+
+    <div class="record-chart">
+      <h2>Daily bars</h2>
+      <div class="night-bars">${bars}</div>
     </div>
   `;
 }
@@ -455,9 +455,9 @@ async function loadRecord() {
     const response = await fetch(`${API_BASE}/api/sleep/summary`, { headers });
     if (response.status === 401) {
       recordTokenForm.hidden = false;
-      recordState.textContent = "Sleep records locked.";
+      recordState.textContent = "Private sleep log locked.";
       recordUpdated.textContent = "Read token required.";
-      renderRecordBoundary("Read token required.", "Sleep data is private. Enter the read token once in this browser to load the record.");
+      renderRecordBoundary("Read token required.", "Enter the read token once in this browser to load nightly sleep hours.");
       return;
     }
 
@@ -472,7 +472,7 @@ async function loadRecord() {
     recordTokenForm.hidden = true;
 
     if (!data.recordCount) {
-      recordState.textContent = "No Health Connect records yet.";
+      recordState.textContent = "No synced sleep sessions yet.";
       recordUpdated.textContent = "Waiting for first bridge sync.";
       renderRecordBoundary("No Health Connect records yet.");
       return;

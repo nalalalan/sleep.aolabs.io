@@ -2,7 +2,7 @@
   "name": "sleep-aolabs",
   "version": "0.1.0",
   "private": true,
-  "description": "AO Labs private Health Connect sleep record with a secondary low-stimulation transition surface.",
+  "description": "AO Labs daily sleep-hours log populated from Samsung Health through Health Connect.",
   "main": "server.js",
   "scripts": {
     "dev": "node server.js",

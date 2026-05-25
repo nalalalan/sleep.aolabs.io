@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>sleep.aolabs.io</title>
-  <meta name="description" content="Sleep is a private Health Connect sleep record and low-stimulation transition object from AO Labs.">
+  <meta name="description" content="Sleep logs nightly sleep hours from Samsung Health through Health Connect.">
   <link rel="canonical" href="https://sleep.aolabs.io/">
-  <meta name="theme-color" content="#120b08">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#f6f7f4">
+  <meta name="color-scheme" content="light">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AO Labs">
   <meta property="og:title" content="sleep.aolabs.io">
-  <meta property="og:description" content="A private Health Connect sleep record for Galaxy Watch sleep.">
+  <meta property="og:description" content="A private daily sleep-hours log from Samsung Health.">
   <meta property="og:url" content="https://sleep.aolabs.io/">
   <meta property="og:image" content="https://sleep.aolabs.io/icons/icon-512.png">
   <meta name="twitter:card" content="summary">
@@ -23,7 +23,7 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260525-record-root">
+  <link rel="stylesheet" href="./styles.css?v=20260525-boring-log">
 </head>
 <body>
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -98,8 +98,8 @@
     <section class="record-section" id="record" aria-labelledby="record-title">
       <div class="record-shell">
         <div class="record-head">
-          <h1 id="record-title">Sleep record</h1>
-          <p id="record-state">Samsung Health -> Health Connect -> sleep.aolabs.io.</p>
+          <h1 id="record-title">Sleep log</h1>
+          <p id="record-state">Samsung Health sleep sessions sync here after the Android bridge runs.</p>
         </div>
 
         <form class="record-token" id="record-token-form" hidden>
@@ -109,21 +109,20 @@
 
         <div class="record-toolbar">
           <button id="record-refresh" type="button">Refresh</button>
-          <a class="record-secondary" href="#transition">Transition</a>
           <span id="record-updated">No records loaded.</span>
         </div>
 
         <div class="bridge-install" id="bridge-install">
           <div class="bridge-install-copy">
-            <h2>Android bridge</h2>
-            <p>Samsung Health -> Health Connect -> Sleep.</p>
+            <h2>Samsung Health sync</h2>
+            <p>Galaxy Watch sleep -> Samsung Health -> Health Connect -> this log.</p>
           </div>
-          <a class="bridge-download" href="./downloads/sleep-bridge.apk" download>Download APK</a>
+          <a class="bridge-download" href="./downloads/sleep-bridge.apk" download>Download Android bridge</a>
           <div class="bridge-steps" aria-label="bridge setup">
             <span>Install on Android phone</span>
-            <span>Grant Sleep permission</span>
+            <span>Grant Health Connect sleep</span>
             <span>Paste bridge token</span>
-            <span>Sync last 14 days</span>
+            <span>Sync nights</span>
           </div>
         </div>
 
@@ -235,6 +234,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260525-record-root" defer></script>
+  <script src="./app.js?v=20260525-boring-log" defer></script>
 </body>
 </html>

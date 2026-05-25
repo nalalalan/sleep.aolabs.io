@@ -1,8 +1,8 @@
 # sleep.aolabs.io
 
-Sleep is an AO Labs private sleep record populated from Samsung Health through Health Connect, with a secondary low-stimulation transition surface.
+Sleep is an AO Labs daily sleep-hours log populated from Samsung Health through Health Connect.
 
-The sleep record is the root surface at `/`. It only reads completed sleep sessions that a consented Android bridge sends after wake. The transition surface remains available at `/#transition`.
+The sleep log is the root surface at `/`. It only reads completed sleep sessions that a consented Android bridge sends after wake.
 
 Android bridge download: `https://sleep.aolabs.io/downloads/sleep-bridge.apk`
 
