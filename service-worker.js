@@ -1,4 +1,4 @@
-const CACHE_NAME = "sleep-aolabs-20260525-bridge-install-v1";
+const CACHE_NAME = "sleep-aolabs-20260525-root-install-v1";
 
 const APP_SHELL = [
   "./",

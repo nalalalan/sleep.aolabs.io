@@ -721,14 +721,78 @@ main:has(.paper-section:target) .sleep-experience {
   transition-duration: 1.8s;
 }
 
+.home-bridge-callout {
+  position: absolute;
+  left: 50%;
+  bottom: max(82px, calc(74px + env(safe-area-inset-bottom)));
+  z-index: 8;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  width: min(720px, calc(100vw - 32px));
+  padding: 10px;
+  border: 1px solid rgba(255, 228, 199, .1);
+  border-radius: 8px;
+  background: rgba(13, 8, 6, .68);
+  color: rgba(255, 238, 218, .82);
+  transform: translateX(-50%) scale(calc(.86 + (var(--control-opacity) * .08)));
+  opacity: calc(var(--control-opacity) * .88);
+  backdrop-filter: blur(18px);
+  transition: opacity 1.8s linear, transform 1.8s ease, filter 1.8s ease;
+}
+
+.home-bridge-callout div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.home-bridge-callout strong {
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.home-bridge-callout span {
+  color: rgba(255, 231, 206, .58);
+  font-size: 12px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.home-bridge-callout a {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 228, 199, .13);
+  border-radius: 8px;
+  background: rgba(255, 238, 218, .075);
+  color: #ffeeda;
+  padding: 0 11px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.home-bridge-callout a:hover {
+  background: rgba(255, 238, 218, .12);
+}
+
 .is-finished .quiet-controls,
 .is-finished .entry-button,
+.is-finished .home-bridge-callout,
 .is-released .quiet-controls,
-.is-released .entry-button {
+.is-released .entry-button,
+.is-released .home-bridge-callout {
   pointer-events: none;
 }
 
 .is-released .quiet-controls {
+  opacity: 0;
+  filter: blur(8px);
+}
+
+.is-released .home-bridge-callout {
   opacity: 0;
   filter: blur(8px);
 }
@@ -1344,6 +1408,15 @@ figcaption {
 
   .quiet-controls {
     bottom: max(22px, env(safe-area-inset-bottom));
+  }
+
+  .home-bridge-callout {
+    bottom: max(76px, calc(68px + env(safe-area-inset-bottom)));
+    grid-template-columns: 1fr;
+  }
+
+  .home-bridge-callout a {
+    width: 100%;
   }
 
   .sleep-focus {
