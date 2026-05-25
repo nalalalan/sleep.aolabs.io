@@ -373,95 +373,15 @@ function renderRecordBoundary(message, detail = "") {
   `;
 }
 
-function renderRecordSummary(data) {
-  if (!recordContent) return;
-  const latest = data.latest;
-  const maxDuration = Math.max(1, ...data.trend.map((night) => night.durationMinutes || 0));
-  const bars = data.trend.map((night) => {
-    const stages = night.stageMinutes || {};
-    const segments = [
-      ["deep", stages.deep],
-      ["rem", stages.rem],
-      ["light", stages.light],
-      ["sleeping", stages.sleeping],
-      ["unknown", stages.unknown],
-      ["awake", stages.awake],
-      ["outOfBed", stages.outOfBed]
-    ].filter(([, minutes]) => minutes > 0);
-    const fallback = segments.length ? "" : `<span class="night-segment sleeping" style="height:${Math.max(4, (night.durationMinutes / maxDuration) * 100)}%"></span>`;
-    return `
-      <div class="night-bar" title="${night.sleepDate}: ${formatMinutes(night.durationMinutes)}">
-        <div class="night-bar-stack" style="height:${Math.max(16, (night.durationMinutes / maxDuration) * 160)}px">
-          ${segments.map(([stage, minutes]) => `<span class="night-segment ${stage}" style="height:${Math.max(2, (minutes / Math.max(1, night.durationMinutes)) * 100)}%"></span>`).join("")}
-          ${fallback}
-        </div>
-        <span class="night-date">${formatNightDate(night.sleepDate)}</span>
-      </div>
-    `;
-  }).join("");
-
-  const rows = data.nights.map((night) => {
-    const stages = night.stageMinutes || {};
-    return `
-      <div class="night-row">
-        <span class="night-primary">${formatNightDate(night.sleepDate)}</span>
-        <span>${formatMinutes(night.durationMinutes)}</span>
-        <span>${formatMinutes(stageTotal(stages, ["awake", "outOfBed"]))}</span>
-        <span>${formatMinutes(stageTotal(stages, ["light", "sleeping"]))}</span>
-        <span>${formatMinutes(stages.deep || 0)}</span>
-        <span>${formatMinutes(stages.rem || 0)}</span>
-      </div>
-    `;
-  }).join("");
-
-  recordContent.innerHTML = `
-    <div class="record-summary">
-      <div>
-        <span class="record-label">Latest sleep</span>
-        <span class="record-value">${formatMinutes(latest.durationMinutes)}</span>
-        <span class="record-meta">${formatNightDate(latest.sleepDate)} · ${formatDateTime(latest.startTime)} to ${formatDateTime(latest.endTime)}</span>
-      </div>
-      <div>
-        <span class="record-label">7-night avg</span>
-        <span class="record-value">${formatMinutes(data.averageDurationMinutes)}</span>
-        <span class="record-meta">${data.nightCount} ${data.nightCount === 1 ? "night" : "nights"} stored</span>
-      </div>
-      <div>
-        <span class="record-label">Asleep avg</span>
-        <span class="record-value">${formatMinutes(data.averageAsleepMinutes)}</span>
-        <span class="record-meta">awake time excluded</span>
-      </div>
-    </div>
-
-    <div class="record-list">
-      <h2>Daily sleep hours</h2>
-      <div class="night-row night-header">
-        <span>Date</span>
-        <span>Total</span>
-        <span>Awake</span>
-        <span>Light</span>
-        <span>Deep</span>
-        <span>REM</span>
-      </div>
-      ${rows}
-    </div>
-
-    <div class="record-chart">
-      <h2>Daily bars</h2>
-      <div class="night-bars">${bars}</div>
-    </div>
-  `;
-}
-
 function renderRecordLog(data) {
   if (!recordContent) return;
 
   const trend = [...(data.trend || [])].sort((a, b) => new Date(`${a.sleepDate}T12:00:00`) - new Date(`${b.sleepDate}T12:00:00`));
   const maxDuration = Math.max(60, ...trend.map((night) => night.durationMinutes || 0));
   const maxHours = Math.max(4, Math.ceil(maxDuration / 60));
-  const width = 900;
-  const height = 430;
-  const pad = { top: 46, right: 32, bottom: 64, left: 66 };
+  const width = 780;
+  const height = 390;
+  const pad = { top: 48, right: 28, bottom: 58, left: 56 };
   const plotWidth = width - pad.left - pad.right;
   const plotHeight = height - pad.top - pad.bottom;
   const xFor = (index) => pad.left + (trend.length === 1 ? plotWidth / 2 : (index / (trend.length - 1)) * plotWidth);
@@ -471,15 +391,7 @@ function renderRecordLog(data) {
     x: xFor(index),
     y: yFor(night.durationMinutes || 0)
   }));
-  const linePath = points.reduce((path, point, index) => {
-    if (!index) return `M ${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
-    const previous = points[index - 1];
-    const control = (point.x - previous.x) / 2;
-    return `${path} C ${(previous.x + control).toFixed(1)} ${previous.y.toFixed(1)} ${(point.x - control).toFixed(1)} ${point.y.toFixed(1)} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
-  }, "");
-  const areaPath = points.length
-    ? `${linePath} L ${points[points.length - 1].x.toFixed(1)} ${pad.top + plotHeight} L ${points[0].x.toFixed(1)} ${pad.top + plotHeight} Z`
-    : "";
+  const linePoints = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
   const gridValues = Array.from(new Set([0, Math.ceil(maxHours / 2), maxHours]));
   const grid = gridValues.map((hour) => {
     const y = yFor(hour * 60);
@@ -489,11 +401,6 @@ function renderRecordLog(data) {
         <text x="${pad.left - 12}" y="${(y + 4).toFixed(1)}">${hour}h</text>
       </g>
     `;
-  }).join("");
-  const barWidth = Math.max(18, Math.min(46, plotWidth / Math.max(1, trend.length) * 0.45));
-  const bars = points.map((point) => {
-    const barHeight = pad.top + plotHeight - point.y;
-    return `<rect class="trend-bar" x="${(point.x - barWidth / 2).toFixed(1)}" y="${point.y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(2, barHeight).toFixed(1)}" rx="10"></rect>`;
   }).join("");
   const tickEvery = Math.max(1, Math.ceil(trend.length / 8));
   const markers = points.map((point, index) => {
@@ -534,21 +441,8 @@ function renderRecordLog(data) {
         <span>${data.nightCount} ${data.nightCount === 1 ? "night" : "nights"} stored</span>
       </div>
       <svg class="sleep-trend-plot" viewBox="0 0 ${width} ${height}" role="img" aria-label="Sleep hours over time">
-        <defs>
-          <linearGradient id="sleepArea" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#315e66" stop-opacity=".24"></stop>
-            <stop offset=".58" stop-color="#6f8d88" stop-opacity=".10"></stop>
-            <stop offset="1" stop-color="#d9c79b" stop-opacity=".02"></stop>
-          </linearGradient>
-          <linearGradient id="sleepBar" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#2b5964" stop-opacity=".24"></stop>
-            <stop offset="1" stop-color="#64827c" stop-opacity=".10"></stop>
-          </linearGradient>
-        </defs>
         ${grid}
-        ${areaPath ? `<path class="trend-area" d="${areaPath}"></path>` : ""}
-        ${bars}
-        ${linePath ? `<path class="trend-line" d="${linePath}"></path>` : ""}
+        ${linePoints ? `<polyline class="trend-line" points="${linePoints}"></polyline>` : ""}
         ${markers}
       </svg>
     </div>
@@ -556,7 +450,6 @@ function renderRecordLog(data) {
     <div class="record-list latest-entries">
       <div class="record-section-head">
         <h2>Latest entries</h2>
-        <span>newest first</span>
       </div>
       <div class="latest-entry-list">${entries}</div>
     </div>

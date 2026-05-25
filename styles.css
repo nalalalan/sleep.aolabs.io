@@ -1131,14 +1131,6 @@ main:has(.paper-section:target) .record-section {
   text-anchor: end;
 }
 
-.trend-area {
-  fill: url("#sleepArea");
-}
-
-.trend-bar {
-  fill: url("#sleepBar");
-}
-
 .trend-line {
   fill: none;
   stroke: #ffd2a8;
@@ -2027,14 +2019,6 @@ figcaption {
   fill: rgba(196, 224, 219, .72);
 }
 
-.is-reading-record .trend-area {
-  fill: url("#sleepArea");
-}
-
-.is-reading-record .trend-bar {
-  fill: url("#sleepBar");
-}
-
 .is-reading-record .trend-line {
   stroke: #e7f8ef;
   filter: drop-shadow(0 7px 12px rgba(7, 23, 27, .42));
@@ -2239,14 +2223,6 @@ figcaption {
   fill: rgba(25, 38, 36, .55);
 }
 
-.is-reading-record .trend-area {
-  fill: url("#sleepArea");
-}
-
-.is-reading-record .trend-bar {
-  fill: url("#sleepBar");
-}
-
 .is-reading-record .trend-line {
   stroke: #234e58;
   filter: drop-shadow(0 8px 12px rgba(41, 70, 72, .18));
@@ -2327,6 +2303,277 @@ figcaption {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px 12px;
+  }
+}
+
+html:has(body.is-reading-record),
+body.is-reading-record {
+  height: 100%;
+  overflow: hidden;
+}
+
+.is-reading-record .record-section {
+  height: 100svh;
+  min-height: 0;
+  padding: clamp(12px, 2.2vh, 22px) clamp(16px, 4vw, 52px);
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.is-reading-record .record-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(1280px, calc(100vw - 32px));
+  height: 100%;
+  margin: 0;
+  padding: clamp(16px, 2.2vw, 24px);
+  overflow: hidden;
+}
+
+.is-reading-record .record-head {
+  margin: 0 0 clamp(10px, 1.5vh, 14px);
+  padding: 0 230px clamp(10px, 1.5vh, 14px) 0;
+}
+
+.is-reading-record .record-head h1 {
+  font-size: clamp(32px, 4vh, 46px);
+}
+
+.is-reading-record .record-head p {
+  font-size: clamp(14px, 1.7vh, 17px);
+}
+
+.is-reading-record .record-toolbar {
+  top: clamp(16px, 2.2vw, 24px);
+  right: clamp(16px, 2.2vw, 24px);
+}
+
+.is-reading-record .record-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, .75fr);
+  gap: clamp(18px, 2.2vw, 30px);
+  min-height: 0;
+  height: 100%;
+}
+
+.is-reading-record .record-chart,
+.is-reading-record .record-list {
+  min-height: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.is-reading-record .record-trend {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: 0 clamp(18px, 2.4vw, 28px) 0 0;
+  border-right: 1px solid rgba(34, 49, 46, .15);
+}
+
+.is-reading-record .record-section-head {
+  margin: 0 0 clamp(10px, 1.5vh, 14px);
+}
+
+.is-reading-record .record-chart h2,
+.is-reading-record .record-list h2 {
+  font-size: clamp(15px, 1.9vh, 18px);
+}
+
+.is-reading-record .sleep-trend-plot {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.is-reading-record .trend-line {
+  fill: none;
+  stroke: #173f49;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7;
+  filter: none;
+}
+
+.is-reading-record .trend-point circle {
+  fill: #fbf7ea;
+  stroke: #173f49;
+  stroke-width: 4;
+  filter: none;
+}
+
+.is-reading-record .trend-gridline line {
+  stroke: rgba(24, 35, 34, .12);
+}
+
+.is-reading-record .trend-gridline text,
+.is-reading-record .trend-label {
+  fill: rgba(24, 35, 34, .56);
+}
+
+.is-reading-record .trend-value {
+  fill: #172321;
+  font-size: 19px;
+}
+
+.is-reading-record .latest-entries {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: 0;
+}
+
+.is-reading-record .latest-entry-list {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.is-reading-record .latest-entry {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: center;
+  gap: clamp(6px, 1vh, 10px);
+  padding: clamp(10px, 1.9vh, 18px) 0;
+}
+
+.is-reading-record .latest-entry-duration {
+  font-size: clamp(30px, 5.2vh, 48px);
+}
+
+.is-reading-record .entry-stages {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+  justify-content: start;
+}
+
+.is-reading-record .entry-stages span {
+  font-size: clamp(11px, 1.45vh, 13px);
+}
+
+@media (max-width: 760px) {
+  .is-reading-record .record-section {
+    padding: 10px;
+  }
+
+  .is-reading-record .record-shell {
+    width: calc(100vw - 20px) !important;
+    padding: 12px;
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+
+  .is-reading-record .record-head {
+    margin-bottom: 6px;
+    padding: 0 0 7px;
+  }
+
+  .is-reading-record .record-head h1 {
+    font-size: clamp(27px, 4.6vh, 34px);
+  }
+
+  .is-reading-record .record-head p {
+    font-size: clamp(13px, 1.9vh, 15px);
+  }
+
+  .is-reading-record .record-toolbar {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0 0 8px;
+    text-align: left;
+  }
+
+  .is-reading-record .record-toolbar button {
+    width: auto;
+    min-height: 32px;
+    padding: 0 13px;
+  }
+
+  .is-reading-record .record-toolbar span {
+    font-size: 12px;
+    line-height: 1.25;
+    text-align: right;
+  }
+
+  .is-reading-record .record-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, .68fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .is-reading-record .record-trend {
+    padding: 0 0 9px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(34, 49, 46, .15);
+  }
+
+  .is-reading-record .record-section-head {
+    margin-bottom: 6px;
+  }
+
+  .is-reading-record .record-section-head h2 {
+    font-size: 17px;
+  }
+
+  .is-reading-record .record-section-head span {
+    font-size: 12px;
+  }
+
+  .is-reading-record .trend-label,
+  .is-reading-record .trend-gridline text {
+    font-size: 13px;
+  }
+
+  .is-reading-record .trend-value {
+    display: none;
+  }
+
+  .is-reading-record .latest-entry {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    align-content: center;
+    gap: 2px 10px;
+    padding: 4px 0;
+  }
+
+  .is-reading-record .latest-entry-main {
+    gap: 1px;
+  }
+
+  .is-reading-record .latest-entry-main strong {
+    font-size: 15px;
+  }
+
+  .is-reading-record .latest-entry-main span {
+    font-size: 12px;
+  }
+
+  .is-reading-record .latest-entry-duration {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    font-size: clamp(25px, 4.2vh, 34px);
+    line-height: .92;
+    text-align: right;
+  }
+
+  .is-reading-record .entry-stages {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px 9px;
+  }
+
+  .is-reading-record .entry-stages span {
+    font-size: 10px;
+    line-height: 1.25;
   }
 }
 
