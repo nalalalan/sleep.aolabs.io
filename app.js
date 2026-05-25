@@ -13,6 +13,7 @@ const recordRefresh = document.getElementById("record-refresh");
 const recordUpdated = document.getElementById("record-updated");
 const recordTokenForm = document.getElementById("record-token-form");
 const recordTokenInput = document.getElementById("record-token-input");
+const bridgeInstall = document.getElementById("bridge-install");
 
 const DURATION_MS = 13 * 60 * 1000;
 const AUTO_START_MS = 4 * 1000;
@@ -349,6 +350,15 @@ function formatDateTime(value) {
   });
 }
 
+function formatTime(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
 function stageTotal(stageMinutes, keys) {
   return keys.reduce((sum, key) => sum + (stageMinutes?.[key] || 0), 0);
 }
@@ -443,6 +453,100 @@ function renderRecordSummary(data) {
   `;
 }
 
+function renderRecordLog(data) {
+  if (!recordContent) return;
+
+  const trend = [...(data.trend || [])].sort((a, b) => new Date(`${a.sleepDate}T12:00:00`) - new Date(`${b.sleepDate}T12:00:00`));
+  const maxDuration = Math.max(60, ...trend.map((night) => night.durationMinutes || 0));
+  const maxHours = Math.max(4, Math.ceil(maxDuration / 60));
+  const width = 900;
+  const height = 360;
+  const pad = { top: 34, right: 30, bottom: 58, left: 64 };
+  const plotWidth = width - pad.left - pad.right;
+  const plotHeight = height - pad.top - pad.bottom;
+  const xFor = (index) => pad.left + (trend.length === 1 ? plotWidth / 2 : (index / (trend.length - 1)) * plotWidth);
+  const yFor = (minutes) => pad.top + plotHeight - ((minutes || 0) / (maxHours * 60)) * plotHeight;
+  const points = trend.map((night, index) => ({
+    night,
+    x: xFor(index),
+    y: yFor(night.durationMinutes || 0)
+  }));
+  const linePoints = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
+  const areaPoints = points.length
+    ? `${pad.left},${pad.top + plotHeight} ${linePoints} ${pad.left + plotWidth},${pad.top + plotHeight}`
+    : "";
+  const gridValues = Array.from(new Set([0, Math.ceil(maxHours / 2), maxHours]));
+  const grid = gridValues.map((hour) => {
+    const y = yFor(hour * 60);
+    return `
+      <g class="trend-gridline">
+        <line x1="${pad.left}" y1="${y.toFixed(1)}" x2="${pad.left + plotWidth}" y2="${y.toFixed(1)}"></line>
+        <text x="${pad.left - 12}" y="${(y + 4).toFixed(1)}">${hour}h</text>
+      </g>
+    `;
+  }).join("");
+  const barWidth = Math.max(18, Math.min(46, plotWidth / Math.max(1, trend.length) * 0.45));
+  const bars = points.map((point) => {
+    const barHeight = pad.top + plotHeight - point.y;
+    return `<rect class="trend-bar" x="${(point.x - barWidth / 2).toFixed(1)}" y="${point.y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(2, barHeight).toFixed(1)}" rx="7"></rect>`;
+  }).join("");
+  const tickEvery = Math.max(1, Math.ceil(trend.length / 8));
+  const markers = points.map((point, index) => {
+    const showLabel = trend.length <= 8 || index === 0 || index === trend.length - 1 || index % tickEvery === 0;
+    return `
+      <g class="trend-point">
+        <circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="6"></circle>
+        <text class="trend-value" x="${point.x.toFixed(1)}" y="${(point.y - 13).toFixed(1)}">${formatMinutes(point.night.durationMinutes)}</text>
+        ${showLabel ? `<text class="trend-label" x="${point.x.toFixed(1)}" y="${height - 22}">${formatNightDate(point.night.sleepDate)}</text>` : ""}
+      </g>
+    `;
+  }).join("");
+
+  const entries = data.nights.slice(0, 10).map((night) => {
+    const stages = night.stageMinutes || {};
+    const asleep = stageTotal(stages, ["deep", "rem", "light", "sleeping", "unknown"]);
+    return `
+      <article class="latest-entry">
+        <div class="latest-entry-main">
+          <strong>${formatNightDate(night.sleepDate)}</strong>
+          <span>${formatTime(night.startTime)} to ${formatTime(night.endTime)}</span>
+        </div>
+        <b class="latest-entry-duration">${formatMinutes(night.durationMinutes)}</b>
+        <div class="entry-stages" aria-label="sleep stages">
+          <span>asleep ${formatMinutes(asleep)}</span>
+          <span>awake ${formatMinutes(stageTotal(stages, ["awake", "outOfBed"]))}</span>
+          <span>deep ${formatMinutes(stages.deep || 0)}</span>
+          <span>rem ${formatMinutes(stages.rem || 0)}</span>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  recordContent.innerHTML = `
+    <div class="record-chart record-trend">
+      <div class="record-section-head">
+        <h2>Sleep hours over time</h2>
+        <span>${data.nightCount} ${data.nightCount === 1 ? "night" : "nights"} stored</span>
+      </div>
+      <svg class="sleep-trend-plot" viewBox="0 0 ${width} ${height}" role="img" aria-label="Sleep hours over time">
+        ${grid}
+        ${areaPoints ? `<polygon class="trend-area" points="${areaPoints}"></polygon>` : ""}
+        ${bars}
+        ${linePoints ? `<polyline class="trend-line" points="${linePoints}"></polyline>` : ""}
+        ${markers}
+      </svg>
+    </div>
+
+    <div class="record-list latest-entries">
+      <div class="record-section-head">
+        <h2>Latest entries</h2>
+        <span>newest first</span>
+      </div>
+      <div class="latest-entry-list">${entries}</div>
+    </div>
+  `;
+}
+
 async function loadRecord() {
   if (!recordContent || recordLoading) return;
   recordLoading = true;
@@ -455,6 +559,7 @@ async function loadRecord() {
     const response = await fetch(`${API_BASE}/api/sleep/summary`, { headers });
     if (response.status === 401) {
       recordTokenForm.hidden = false;
+      if (bridgeInstall) bridgeInstall.hidden = true;
       recordState.textContent = "Private sleep log locked.";
       recordUpdated.textContent = "Read token required.";
       renderRecordBoundary("Read token required.", "Enter the read token once in this browser to load nightly sleep hours.");
@@ -462,6 +567,7 @@ async function loadRecord() {
     }
 
     if (!response.ok) {
+      if (bridgeInstall) bridgeInstall.hidden = true;
       recordState.textContent = "Sleep API unavailable.";
       recordUpdated.textContent = `API returned ${response.status}.`;
       renderRecordBoundary("Sleep API unavailable.", "The record route is live, but the backend is not returning sleep state right now.");
@@ -472,16 +578,19 @@ async function loadRecord() {
     recordTokenForm.hidden = true;
 
     if (!data.recordCount) {
+      if (bridgeInstall) bridgeInstall.hidden = false;
       recordState.textContent = "No synced sleep sessions yet.";
       recordUpdated.textContent = "Waiting for first bridge sync.";
       renderRecordBoundary("No Health Connect records yet.");
       return;
     }
 
-    recordState.textContent = "Health Connect sleep records received.";
+    if (bridgeInstall) bridgeInstall.hidden = true;
+    recordState.textContent = "Sleep hours over time.";
     recordUpdated.textContent = data.lastCapturedAt ? `Last bridge sync ${formatDateTime(data.lastCapturedAt)}.` : `Generated ${formatDateTime(data.generatedAt)}.`;
-    renderRecordSummary(data);
+    renderRecordLog(data);
   } catch (error) {
+    if (bridgeInstall) bridgeInstall.hidden = true;
     recordState.textContent = "Sleep API unreachable.";
     recordUpdated.textContent = "Local or live backend not reachable.";
     renderRecordBoundary("Sleep API unreachable.", "The page loaded, but the sleep record backend could not be reached from this browser.");

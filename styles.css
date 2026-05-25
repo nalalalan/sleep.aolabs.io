@@ -905,6 +905,10 @@ main:has(.paper-section:target) .record-section {
   display: none;
 }
 
+.bridge-install[hidden] {
+  display: none;
+}
+
 .record-token input {
   width: min(360px, 100%);
   min-height: 42px;
@@ -1085,6 +1089,146 @@ main:has(.paper-section:target) .record-section {
   margin: 0 0 16px;
   font-size: 15px;
   font-weight: 760;
+}
+
+.record-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
+.record-section-head h2 {
+  margin: 0;
+}
+
+.record-section-head > span {
+  color: rgba(255, 231, 206, .52);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.record-trend {
+  padding: 22px;
+}
+
+.sleep-trend-plot {
+  display: block;
+  width: 100%;
+  min-height: 320px;
+}
+
+.trend-gridline line {
+  stroke: rgba(255, 228, 199, .12);
+  stroke-width: 1;
+}
+
+.trend-gridline text {
+  fill: rgba(255, 231, 206, .52);
+  font-size: 14px;
+  text-anchor: end;
+}
+
+.trend-area {
+  fill: rgba(201, 138, 107, .14);
+}
+
+.trend-bar {
+  fill: rgba(255, 238, 218, .13);
+}
+
+.trend-line {
+  fill: none;
+  stroke: #ffd2a8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+}
+
+.trend-point circle {
+  fill: #ffeeda;
+  stroke: rgba(19, 11, 8, .34);
+  stroke-width: 3;
+}
+
+.trend-value,
+.trend-label {
+  fill: rgba(255, 238, 218, .78);
+  font-size: 14px;
+  font-weight: 720;
+  text-anchor: middle;
+}
+
+.trend-label {
+  fill: rgba(255, 231, 206, .55);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.latest-entries {
+  padding: 18px;
+}
+
+.latest-entry-list {
+  display: grid;
+  gap: 10px;
+}
+
+.latest-entry {
+  display: grid;
+  grid-template-columns: minmax(126px, .75fr) auto minmax(260px, 1.25fr);
+  gap: 14px;
+  align-items: center;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255, 228, 199, .1);
+}
+
+.latest-entry:first-child {
+  border-top: 0;
+}
+
+.latest-entry-main {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.latest-entry-main strong {
+  color: #ffeeda;
+  font-size: 17px;
+  line-height: 1.15;
+}
+
+.latest-entry-main span,
+.entry-stages span {
+  color: rgba(255, 231, 206, .64);
+}
+
+.latest-entry-duration {
+  color: #ffeeda;
+  font-size: 28px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.entry-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.entry-stages span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 0 9px;
+  border: 1px solid rgba(255, 228, 199, .1);
+  border-radius: 999px;
+  background: rgba(255, 238, 218, .055);
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .night-bars {
@@ -1547,6 +1691,34 @@ figcaption {
     border-top: 0;
   }
 
+  .record-section-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .record-trend,
+  .latest-entries {
+    padding: 14px;
+  }
+
+  .sleep-trend-plot {
+    min-height: 250px;
+  }
+
+  .trend-value {
+    display: none;
+  }
+
+  .latest-entry {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .entry-stages {
+    justify-content: flex-start;
+  }
+
   .night-row {
     grid-template-columns: 1fr 1fr;
   }
@@ -1622,7 +1794,7 @@ figcaption {
 }
 
 .is-reading-record .record-shell {
-  width: min(536px, 100%);
+  width: min(920px, 100%);
   margin: 0;
   padding: clamp(20px, 2.9vw, 30px);
   border: 1px solid rgba(219, 246, 239, .26);
@@ -1732,6 +1904,10 @@ figcaption {
   color: #f5fbf6;
 }
 
+.is-reading-record .record-section-head > span {
+  color: rgba(196, 224, 219, .68);
+}
+
 .is-reading-record .record-content {
   gap: 14px;
 }
@@ -1804,6 +1980,59 @@ figcaption {
   color: #f5fbf6;
 }
 
+.is-reading-record .trend-gridline line {
+  stroke: rgba(219, 246, 239, .13);
+}
+
+.is-reading-record .trend-gridline text {
+  fill: rgba(196, 224, 219, .72);
+}
+
+.is-reading-record .trend-area {
+  fill: rgba(143, 183, 200, .18);
+}
+
+.is-reading-record .trend-bar {
+  fill: rgba(238, 248, 244, .12);
+}
+
+.is-reading-record .trend-line {
+  stroke: #e7f8ef;
+}
+
+.is-reading-record .trend-point circle {
+  fill: #f5fbf6;
+  stroke: rgba(17, 38, 43, .55);
+}
+
+.is-reading-record .trend-value,
+.is-reading-record .trend-label {
+  fill: rgba(239, 250, 246, .82);
+}
+
+.is-reading-record .trend-label {
+  fill: rgba(196, 224, 219, .70);
+}
+
+.is-reading-record .latest-entry {
+  border-top-color: rgba(219, 246, 239, .13);
+}
+
+.is-reading-record .latest-entry-main strong,
+.is-reading-record .latest-entry-duration {
+  color: #f5fbf6;
+}
+
+.is-reading-record .latest-entry-main span,
+.is-reading-record .entry-stages span {
+  color: rgba(225, 243, 238, .72);
+}
+
+.is-reading-record .entry-stages span {
+  border-color: rgba(219, 246, 239, .14);
+  background: rgba(255, 255, 255, .07);
+}
+
 @media (max-width: 760px) {
   .is-reading-record {
     background:
@@ -1854,6 +2083,11 @@ figcaption {
   .is-reading-record .record-summary > div:first-child {
     border-top: 0;
   }
+}
+
+.is-reading-record .record-token[hidden],
+.is-reading-record .bridge-install[hidden] {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
