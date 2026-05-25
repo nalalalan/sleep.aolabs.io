@@ -1,8 +1,8 @@
 # sleep.aolabs.io
 
-Sleep is an AO Labs low-stimulation transition PWA with a private sleep-record route populated from Samsung Health through Health Connect.
+Sleep is an AO Labs private sleep record populated from Samsung Health through Health Connect, with a secondary low-stimulation transition surface.
 
-The transition surface stays minimal and mostly nonverbal. The record surface lives at `/#record` and only reads completed sleep sessions that a consented Android bridge sends after wake.
+The sleep record is the root surface at `/`. It only reads completed sleep sessions that a consented Android bridge sends after wake. The transition surface remains available at `/#transition`.
 
 Android bridge download: `https://sleep.aolabs.io/downloads/sleep-bridge.apk`
 
@@ -23,7 +23,7 @@ $env:SLEEP_READ_TOKEN = "local-read-token"
 npm run dev
 ```
 
-Then open `http://127.0.0.1:3051/#record`.
+Then open `http://127.0.0.1:3051/`.
 
 ## API
 

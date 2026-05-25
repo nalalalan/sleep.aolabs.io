@@ -121,6 +121,7 @@ textarea {
 }
 
 .suite-brand-cluster {
+  flex: 1 1 auto;
   gap: 8px;
   min-width: 0;
 }
@@ -184,6 +185,35 @@ textarea {
   background: transparent;
   color: rgba(255, 231, 206, .24);
   text-decoration: none;
+}
+
+.suite-topbar-actions {
+  flex: 0 0 auto;
+  gap: 2px;
+}
+
+.is-reading-record .suite-topbar,
+.is-reading-paper .suite-topbar {
+  color: rgba(255, 237, 216, .62);
+  opacity: .82;
+}
+
+.is-reading-record .suite-app-brand,
+.is-reading-paper .suite-app-brand {
+  color: rgba(255, 237, 216, .62);
+}
+
+.is-reading-record .suite-ao-home img,
+.is-reading-record .suite-app-mark,
+.is-reading-paper .suite-ao-home img,
+.is-reading-paper .suite-app-mark {
+  opacity: .7;
+  filter: none;
+}
+
+.is-reading-record .suite-topbar-actions a,
+.is-reading-paper .suite-topbar-actions a {
+  color: rgba(255, 231, 206, .74);
 }
 
 .record-icon {
@@ -290,6 +320,7 @@ main {
 }
 
 .sleep-experience {
+  display: none;
   position: relative;
   min-height: 100svh;
   overflow: hidden;
@@ -297,11 +328,9 @@ main {
   background: #060403;
 }
 
-.is-reading-record .sleep-experience,
-.is-reading-paper .sleep-experience,
-main:has(.record-section:target) .sleep-experience,
-main:has(.paper-section:target) .sleep-experience {
-  display: none;
+.is-reading-transition .sleep-experience,
+main:has(.sleep-experience:target) .sleep-experience {
+  display: block;
 }
 
 .sleep-experience::before {
@@ -803,13 +832,20 @@ main:has(.paper-section:target) .sleep-experience {
 }
 
 .record-section {
-  display: none;
+  display: block;
   min-height: 100vh;
   background:
     radial-gradient(circle at 18% 16%, rgba(186, 116, 86, .18), transparent 34%),
     linear-gradient(180deg, #090605 0, #100a08 48%, #080504 100%);
   color: #ffeeda;
   padding: 92px 20px 86px;
+}
+
+.is-reading-transition .record-section,
+.is-reading-paper .record-section,
+main:has(.sleep-experience:target) .record-section,
+main:has(.paper-section:target) .record-section {
+  display: none;
 }
 
 .record-section.is-visible,
@@ -882,6 +918,7 @@ main:has(.paper-section:target) .sleep-experience {
 
 .record-token button,
 .record-toolbar button,
+.record-secondary,
 .bridge-download {
   min-height: 42px;
   border: 1px solid rgba(255, 228, 199, .18);
@@ -894,8 +931,16 @@ main:has(.paper-section:target) .sleep-experience {
 
 .record-token button:hover,
 .record-toolbar button:hover,
+.record-secondary:hover,
 .bridge-download:hover {
   background: rgba(255, 238, 218, .14);
+}
+
+.record-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .record-toolbar {
@@ -1371,6 +1416,11 @@ figcaption {
     opacity: .14;
   }
 
+  .is-reading-record .suite-topbar,
+  .is-reading-paper .suite-topbar {
+    opacity: .82;
+  }
+
   .suite-ao-home {
     width: 31px;
     height: 31px;
@@ -1459,6 +1509,15 @@ figcaption {
   .record-token input,
   .record-token button {
     width: 100%;
+  }
+
+  .record-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .record-toolbar > span {
+    grid-column: 1 / -1;
   }
 
   .bridge-install {

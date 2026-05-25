@@ -177,8 +177,30 @@ function cancelAutoStart() {
 function queueAutoStart() {
   cancelAutoStart();
   autoStartTimer = window.setTimeout(() => {
-    if (!running && window.location.hash !== "#paper") startSequence();
+    if (!running && window.location.hash === "#transition") startSequence();
   }, AUTO_START_MS);
+}
+
+function resetTransitionState() {
+  cancelAutoStart();
+  running = false;
+  cancelAnimationFrame(frame);
+  closeThought(false);
+  thoughtButton.disabled = false;
+  body.classList.remove("is-softening", "is-released", "is-near-black", "is-finished");
+  entryButton.setAttribute("aria-label", "soften");
+  setVar("--shutdown", "0");
+  setVar("--blackout", "0");
+  setVar("--drowse", "0");
+  setVar("--idle-release", "0");
+  setVar("--control-opacity", ".86");
+  setVar("--entry-opacity", "1");
+  setVar("--thought-opacity", "1");
+  setVar("--button-scale", "1");
+  setVar("--stage-brightness", "1");
+  setVar("--stage-contrast", "1");
+  setVar("--stage-saturation", "1");
+  setVar("--field-blur", "2px");
 }
 
 function initAmbient() {
@@ -470,23 +492,26 @@ async function loadRecord() {
 
 function syncPanelVisibility() {
   const paper = document.getElementById("paper");
+  const transition = document.getElementById("transition");
   const paperVisible = window.location.hash === "#paper";
-  const recordVisible = window.location.hash === "#record";
+  const transitionVisible = window.location.hash === "#transition";
+  const recordVisible = !paperVisible && !transitionVisible;
   paper?.classList.toggle("is-visible", paperVisible);
   recordSection?.classList.toggle("is-visible", recordVisible);
   body.classList.toggle("is-reading-paper", paperVisible);
   body.classList.toggle("is-reading-record", recordVisible);
+  body.classList.toggle("is-reading-transition", transitionVisible);
 
   if (paperVisible) {
-    cancelAutoStart();
+    resetTransitionState();
     window.requestAnimationFrame(() => paper?.scrollIntoView({ block: "start" }));
-  } else if (recordVisible) {
-    cancelAutoStart();
+  } else if (transitionVisible) {
+    window.requestAnimationFrame(() => transition?.scrollIntoView({ block: "start" }));
+    queueAutoStart();
+  } else {
+    resetTransitionState();
     window.requestAnimationFrame(() => recordSection?.scrollIntoView({ block: "start" }));
     loadRecord();
-  } else if (!running) {
-    window.scrollTo(0, 0);
-    queueAutoStart();
   }
 }
 

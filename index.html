@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>sleep.aolabs.io</title>
-  <meta name="description" content="Sleep is a low-stimulation digital transition object and private Health Connect sleep record from AO Labs.">
+  <meta name="description" content="Sleep is a private Health Connect sleep record and low-stimulation transition object from AO Labs.">
   <link rel="canonical" href="https://sleep.aolabs.io/">
   <meta name="theme-color" content="#120b08">
   <meta name="color-scheme" content="dark">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AO Labs">
   <meta property="og:title" content="sleep.aolabs.io">
-  <meta property="og:description" content="A low-stimulation digital transition object.">
+  <meta property="og:description" content="A private Health Connect sleep record for Galaxy Watch sleep.">
   <meta property="og:url" content="https://sleep.aolabs.io/">
   <meta property="og:image" content="https://sleep.aolabs.io/icons/icon-512.png">
   <meta name="twitter:card" content="summary">
@@ -23,7 +23,7 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260525-root-install">
+  <link rel="stylesheet" href="./styles.css?v=20260525-record-root">
 </head>
 <body>
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -37,14 +37,14 @@
       </a>
     </div>
     <nav class="suite-topbar-actions" aria-label="sleep navigation">
-      <a href="#record" aria-label="sleep record"><span class="record-icon" aria-hidden="true"></span></a>
+      <a href="./" aria-label="sleep record"><span class="record-icon" aria-hidden="true"></span></a>
       <a href="./downloads/sleep-bridge.apk" download aria-label="download Android bridge"><span class="bridge-icon" aria-hidden="true"></span></a>
       <a href="#paper" aria-label="paper"><span class="paper-icon" aria-hidden="true"></span></a>
     </nav>
   </header>
 
   <main>
-    <section class="sleep-experience" aria-label="Sleep">
+    <section class="sleep-experience" id="transition" aria-label="Sleep transition">
       <div class="sleep-stage" aria-hidden="true">
         <canvas class="ambient-canvas" id="ambient-canvas"></canvas>
         <div class="field field-a"></div>
@@ -90,7 +90,7 @@
             <span>Samsung Health -> Health Connect -> Sleep.</span>
           </div>
           <a href="./downloads/sleep-bridge.apk" download>Download APK</a>
-          <a href="#record">Sleep record</a>
+          <a href="./">Sleep record</a>
         </div>
       </div>
     </section>
@@ -99,7 +99,7 @@
       <div class="record-shell">
         <div class="record-head">
           <h1 id="record-title">Sleep record</h1>
-          <p id="record-state">Health Connect bridge waiting.</p>
+          <p id="record-state">Samsung Health -> Health Connect -> sleep.aolabs.io.</p>
         </div>
 
         <form class="record-token" id="record-token-form" hidden>
@@ -109,6 +109,7 @@
 
         <div class="record-toolbar">
           <button id="record-refresh" type="button">Refresh</button>
+          <a class="record-secondary" href="#transition">Transition</a>
           <span id="record-updated">No records loaded.</span>
         </div>
 
@@ -234,6 +235,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260525-healthconnect" defer></script>
+  <script src="./app.js?v=20260525-record-root" defer></script>
 </body>
 </html>
