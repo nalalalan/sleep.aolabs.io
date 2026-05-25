@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Sleep Bridge</string>
+    <string name="health_permission_rationale">Sleep Bridge reads completed Health Connect sleep sessions and sends them to sleep.aolabs.io after wake.</string>
+</resources>

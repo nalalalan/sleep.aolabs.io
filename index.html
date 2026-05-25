@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>sleep.aolabs.io</title>
-  <meta name="description" content="Sleep is a low-stimulation digital transition object from AO Labs.">
+  <meta name="description" content="Sleep is a low-stimulation digital transition object and private Health Connect sleep record from AO Labs.">
   <link rel="canonical" href="https://sleep.aolabs.io/">
   <meta name="theme-color" content="#120b08">
   <meta name="color-scheme" content="dark">
@@ -23,7 +23,7 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20260522-dreamfocus">
+  <link rel="stylesheet" href="./styles.css?v=20260525-healthconnect">
 </head>
 <body>
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -37,6 +37,7 @@
       </a>
     </div>
     <nav class="suite-topbar-actions" aria-label="sleep navigation">
+      <a href="#record" aria-label="sleep record"><span class="record-icon" aria-hidden="true"></span></a>
       <a href="#paper" aria-label="paper"><span class="paper-icon" aria-hidden="true"></span></a>
     </nav>
   </header>
@@ -84,11 +85,37 @@
       </div>
     </section>
 
+    <section class="record-section" id="record" aria-labelledby="record-title">
+      <div class="record-shell">
+        <div class="record-head">
+          <h1 id="record-title">Sleep record</h1>
+          <p id="record-state">Health Connect bridge waiting.</p>
+        </div>
+
+        <form class="record-token" id="record-token-form" hidden>
+          <input id="record-token-input" type="password" autocomplete="off" placeholder="read token" aria-label="read token">
+          <button type="submit">Unlock</button>
+        </form>
+
+        <div class="record-toolbar">
+          <button id="record-refresh" type="button">Refresh</button>
+          <span id="record-updated">No records loaded.</span>
+        </div>
+
+        <div class="record-content" id="record-content" data-state="loading">
+          <div class="record-boundary">
+            <strong>Health Connect permission needed.</strong>
+            <p>Samsung Health writes completed Galaxy Watch sleep to Health Connect after wake. The Android bridge sends completed sessions to this record.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="paper-section" id="paper" aria-labelledby="paper-title">
       <article class="paper">
         <p class="paper-kicker">design research scaffold</p>
-        <h1 id="paper-title">Sleep: a low-stimulation digital transition object for reducing pre-sleep cognitive and sensory arousal</h1>
-        <p class="paper-meta">AO Labs, 2026. This section documents the mechanism and study plan; the live transition surface intentionally avoids coaching language.</p>
+        <h1 id="paper-title">Sleep: a low-stimulation digital transition object with consented wearable outcome capture</h1>
+        <p class="paper-meta">AO Labs, 2026. This section documents the mechanism, Health Connect data path, and study plan; the live transition surface intentionally avoids coaching language.</p>
 
         <section>
           <h2>Abstract</h2>
@@ -134,8 +161,14 @@
 
         <section>
           <h2>Experimental Protocol Proposal</h2>
-          <p>A first evaluation should use a two-week within-subject alternating-night design. Participants would compare Sleep against their usual phone behavior during the final 20 minutes before intended sleep. The app would log only local, non-identifying interaction timing unless a research build explicitly adds consented instrumentation.</p>
-          <p>Primary comparison nights should be balanced by weekday, caffeine/alcohol status, and intended bedtime. A follow-up n-of-1 protocol could test whether the same user shows earlier phone-touch cessation, lower pre-sleep arousal ratings, and shorter subjective sleep-onset latency after Sleep nights.</p>
+          <p>A first evaluation should use a two-week within-subject alternating-night design. Participants would compare Sleep against their usual phone behavior during the final 20 minutes before intended sleep. The transition surface remains non-coaching; a separate consented record can receive completed sleep sessions after wake through Health Connect.</p>
+          <p>Primary comparison nights should be balanced by weekday, caffeine/alcohol status, and intended bedtime. A follow-up n-of-1 protocol could test whether the same user shows earlier phone-touch cessation, lower pre-sleep arousal ratings, shorter subjective sleep-onset latency, and changed wearable-derived sleep duration after Sleep nights.</p>
+        </section>
+
+        <section>
+          <h2>Health Connect Data Path</h2>
+          <p>Galaxy Watch sleep is processed by Samsung Health on the paired phone after wake. When Samsung Health synchronization with Health Connect is enabled, a private Android bridge with read permission for sleep sessions can read completed Health Connect records and send session timing and stage intervals to the Sleep API.</p>
+          <p>The public transition surface does not receive raw phone or watch access. Sleep records remain behind a read token, and ingestion requires a separate bridge token. The record is a longitudinal outcome surface, not a diagnosis, treatment claim, or medical device.</p>
         </section>
 
         <section>
@@ -147,7 +180,7 @@
             </div>
             <div>
               <h3>Sleep</h3>
-              <p>Subjective sleep-onset latency, wake after sleep onset, next-morning sleep quality, optional wearable-derived sleep timing.</p>
+              <p>Subjective sleep-onset latency, wake after sleep onset, next-morning sleep quality, Health Connect sleep sessions, stage intervals, and nightly duration trend.</p>
             </div>
             <div>
               <h3>Arousal</h3>
@@ -177,6 +210,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260522-dreamfocus" defer></script>
+  <script src="./app.js?v=20260525-healthconnect" defer></script>
 </body>
 </html>

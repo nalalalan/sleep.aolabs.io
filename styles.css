@@ -186,6 +186,35 @@ textarea {
   text-decoration: none;
 }
 
+.record-icon {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 16px;
+  opacity: .72;
+}
+
+.record-icon::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  border: 1.4px solid currentColor;
+}
+
+.record-icon::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 0;
+  width: 1.4px;
+  height: 16px;
+  border-radius: 99px;
+  background: currentColor;
+  box-shadow: -5px 6px 0 -1px currentColor, 5px 6px 0 -1px currentColor;
+  opacity: .72;
+}
+
 .paper-icon {
   position: relative;
   display: block;
@@ -232,6 +261,13 @@ main {
   overflow: hidden;
   isolation: isolate;
   background: #060403;
+}
+
+.is-reading-record .sleep-experience,
+.is-reading-paper .sleep-experience,
+main:has(.record-section:target) .sleep-experience,
+main:has(.paper-section:target) .sleep-experience {
+  display: none;
 }
 
 .sleep-experience::before {
@@ -668,6 +704,283 @@ main {
   filter: blur(16px) saturate(.45);
 }
 
+.record-section {
+  display: none;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(186, 116, 86, .18), transparent 34%),
+    linear-gradient(180deg, #090605 0, #100a08 48%, #080504 100%);
+  color: #ffeeda;
+  padding: 92px 20px 86px;
+}
+
+.record-section.is-visible,
+.record-section:target {
+  display: block;
+}
+
+.record-shell {
+  width: min(980px, 100%);
+  margin: 0 auto;
+}
+
+.record-head {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 22px;
+}
+
+.record-head h1 {
+  margin: 0;
+  font-size: clamp(34px, 6vw, 72px);
+  line-height: .98;
+  font-weight: 760;
+}
+
+.record-head p,
+.record-toolbar,
+.record-boundary p,
+.record-note,
+.record-meta {
+  color: rgba(255, 231, 206, .62);
+}
+
+.record-head p {
+  max-width: 640px;
+  margin: 0;
+  font-size: 16px;
+}
+
+.record-token,
+.record-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.record-token {
+  margin: 18px 0;
+}
+
+.record-token[hidden] {
+  display: none;
+}
+
+.record-token input {
+  width: min(360px, 100%);
+  min-height: 42px;
+  border: 1px solid rgba(255, 228, 199, .18);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .28);
+  color: #ffeeda;
+  padding: 0 12px;
+  outline: none;
+}
+
+.record-token input:focus {
+  border-color: rgba(236, 176, 124, .6);
+}
+
+.record-token button,
+.record-toolbar button {
+  min-height: 42px;
+  border: 1px solid rgba(255, 228, 199, .18);
+  border-radius: 8px;
+  background: rgba(255, 238, 218, .09);
+  color: #ffeeda;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.record-token button:hover,
+.record-toolbar button:hover {
+  background: rgba(255, 238, 218, .14);
+}
+
+.record-toolbar {
+  margin: 0 0 22px;
+  font-size: 13px;
+}
+
+.record-content {
+  display: grid;
+  gap: 18px;
+}
+
+.record-boundary,
+.record-summary,
+.record-chart,
+.record-list {
+  min-width: 0;
+  border: 1px solid rgba(255, 228, 199, .12);
+  border-radius: 8px;
+  background: rgba(255, 238, 218, .055);
+}
+
+.record-boundary {
+  max-width: 720px;
+  padding: 18px;
+}
+
+.record-boundary strong {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.record-boundary p {
+  margin: 0;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.record-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) repeat(2, minmax(210px, .42fr));
+  gap: 0;
+  overflow: hidden;
+}
+
+.record-summary > div {
+  min-height: 136px;
+  padding: 18px;
+  border-left: 1px solid rgba(255, 228, 199, .1);
+}
+
+.record-summary > div:first-child {
+  border-left: 0;
+}
+
+.record-value {
+  display: block;
+  margin: 4px 0 8px;
+  font-size: clamp(30px, 5vw, 54px);
+  line-height: 1;
+  font-weight: 760;
+  white-space: nowrap;
+}
+
+.record-summary > div:not(:first-child) .record-value {
+  font-size: clamp(30px, 3.8vw, 48px);
+}
+
+.record-label {
+  display: block;
+  color: rgba(255, 231, 206, .55);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.record-chart {
+  padding: 18px;
+}
+
+.record-chart h2,
+.record-list h2 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 760;
+}
+
+.night-bars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
+  align-items: end;
+  gap: 10px;
+  min-height: 190px;
+}
+
+.night-bar {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+  min-width: 0;
+}
+
+.night-bar-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 7px;
+  background: rgba(255, 238, 218, .06);
+}
+
+.night-segment {
+  min-height: 2px;
+}
+
+.night-segment.sleeping,
+.night-segment.light {
+  background: #c98a6b;
+}
+
+.night-segment.deep {
+  background: #7f6ca7;
+}
+
+.night-segment.rem {
+  background: #d7b06c;
+}
+
+.night-segment.awake,
+.night-segment.outOfBed {
+  background: rgba(255, 238, 218, .44);
+}
+
+.night-segment.unknown {
+  background: rgba(255, 238, 218, .2);
+}
+
+.night-date {
+  overflow: hidden;
+  color: rgba(255, 231, 206, .52);
+  font-size: 11px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-list {
+  overflow: hidden;
+}
+
+.record-list h2 {
+  margin: 0;
+  padding: 18px 18px 0;
+}
+
+.night-row {
+  display: grid;
+  grid-template-columns: minmax(92px, .72fr) minmax(130px, 1fr) repeat(4, minmax(64px, .5fr));
+  gap: 0;
+  border-top: 1px solid rgba(255, 228, 199, .1);
+}
+
+.night-row > span {
+  min-width: 0;
+  padding: 13px 12px;
+  color: rgba(255, 231, 206, .72);
+  font-size: 13px;
+}
+
+.night-row > span:not(:first-child) {
+  border-left: 1px solid rgba(255, 228, 199, .08);
+}
+
+.night-row .night-primary {
+  color: #ffeeda;
+  font-weight: 720;
+}
+
+.night-header > span {
+  color: rgba(255, 231, 206, .46);
+  font-size: 11px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
 .paper-section {
   display: none;
   min-height: 100vh;
@@ -968,6 +1281,33 @@ figcaption {
   .mechanism-grid,
   .measure-grid {
     grid-template-columns: 1fr;
+  }
+
+  .record-section {
+    padding: 76px 14px 64px;
+  }
+
+  .record-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .record-summary > div,
+  .record-summary > div:first-child {
+    min-height: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 228, 199, .1);
+  }
+
+  .record-summary > div:first-child {
+    border-top: 0;
+  }
+
+  .night-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .night-row > span:nth-child(n + 3) {
+    display: none;
   }
 
   .paper-section {

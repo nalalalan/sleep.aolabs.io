@@ -2,13 +2,20 @@
   "name": "sleep-aolabs",
   "version": "0.1.0",
   "private": true,
-  "description": "A low-stimulation AO Labs sleep transition PWA.",
+  "description": "A low-stimulation AO Labs sleep transition PWA with private Health Connect sleep records.",
+  "main": "server.js",
   "scripts": {
-    "dev": "npx http-server . -p 3051 -c-1",
-    "serve": "npx http-server . -p 3051 -c-1"
+    "dev": "node server.js",
+    "serve": "node server.js",
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pg": "^8.13.1"
   },
   "devDependencies": {
     "http-server": "^14.1.1"

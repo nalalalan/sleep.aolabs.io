@@ -1,4 +1,4 @@
-const CACHE_NAME = "sleep-aolabs-20260522-v9";
+const CACHE_NAME = "sleep-aolabs-20260525-healthconnect-v1";
 
 const APP_SHELL = [
   "./",
@@ -32,6 +32,7 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  if (new URL(event.request.url).pathname.startsWith("/api/")) return;
 
   event.respondWith(
     fetch(event.request)
