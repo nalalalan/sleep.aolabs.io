@@ -460,8 +460,8 @@ function renderRecordLog(data) {
   const maxDuration = Math.max(60, ...trend.map((night) => night.durationMinutes || 0));
   const maxHours = Math.max(4, Math.ceil(maxDuration / 60));
   const width = 900;
-  const height = 360;
-  const pad = { top: 34, right: 30, bottom: 58, left: 64 };
+  const height = 430;
+  const pad = { top: 46, right: 32, bottom: 64, left: 66 };
   const plotWidth = width - pad.left - pad.right;
   const plotHeight = height - pad.top - pad.bottom;
   const xFor = (index) => pad.left + (trend.length === 1 ? plotWidth / 2 : (index / (trend.length - 1)) * plotWidth);
@@ -471,9 +471,14 @@ function renderRecordLog(data) {
     x: xFor(index),
     y: yFor(night.durationMinutes || 0)
   }));
-  const linePoints = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
-  const areaPoints = points.length
-    ? `${pad.left},${pad.top + plotHeight} ${linePoints} ${pad.left + plotWidth},${pad.top + plotHeight}`
+  const linePath = points.reduce((path, point, index) => {
+    if (!index) return `M ${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
+    const previous = points[index - 1];
+    const control = (point.x - previous.x) / 2;
+    return `${path} C ${(previous.x + control).toFixed(1)} ${previous.y.toFixed(1)} ${(point.x - control).toFixed(1)} ${point.y.toFixed(1)} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
+  }, "");
+  const areaPath = points.length
+    ? `${linePath} L ${points[points.length - 1].x.toFixed(1)} ${pad.top + plotHeight} L ${points[0].x.toFixed(1)} ${pad.top + plotHeight} Z`
     : "";
   const gridValues = Array.from(new Set([0, Math.ceil(maxHours / 2), maxHours]));
   const grid = gridValues.map((hour) => {
@@ -488,7 +493,7 @@ function renderRecordLog(data) {
   const barWidth = Math.max(18, Math.min(46, plotWidth / Math.max(1, trend.length) * 0.45));
   const bars = points.map((point) => {
     const barHeight = pad.top + plotHeight - point.y;
-    return `<rect class="trend-bar" x="${(point.x - barWidth / 2).toFixed(1)}" y="${point.y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(2, barHeight).toFixed(1)}" rx="7"></rect>`;
+    return `<rect class="trend-bar" x="${(point.x - barWidth / 2).toFixed(1)}" y="${point.y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(2, barHeight).toFixed(1)}" rx="10"></rect>`;
   }).join("");
   const tickEvery = Math.max(1, Math.ceil(trend.length / 8));
   const markers = points.map((point, index) => {
@@ -529,10 +534,21 @@ function renderRecordLog(data) {
         <span>${data.nightCount} ${data.nightCount === 1 ? "night" : "nights"} stored</span>
       </div>
       <svg class="sleep-trend-plot" viewBox="0 0 ${width} ${height}" role="img" aria-label="Sleep hours over time">
+        <defs>
+          <linearGradient id="sleepArea" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#315e66" stop-opacity=".24"></stop>
+            <stop offset=".58" stop-color="#6f8d88" stop-opacity=".10"></stop>
+            <stop offset="1" stop-color="#d9c79b" stop-opacity=".02"></stop>
+          </linearGradient>
+          <linearGradient id="sleepBar" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#2b5964" stop-opacity=".24"></stop>
+            <stop offset="1" stop-color="#64827c" stop-opacity=".10"></stop>
+          </linearGradient>
+        </defs>
         ${grid}
-        ${areaPoints ? `<polygon class="trend-area" points="${areaPoints}"></polygon>` : ""}
+        ${areaPath ? `<path class="trend-area" d="${areaPath}"></path>` : ""}
         ${bars}
-        ${linePoints ? `<polyline class="trend-line" points="${linePoints}"></polyline>` : ""}
+        ${linePath ? `<path class="trend-line" d="${linePath}"></path>` : ""}
         ${markers}
       </svg>
     </div>

@@ -1096,11 +1096,12 @@ main:has(.paper-section:target) .record-section {
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  margin: 0 0 12px;
+  margin: 0 0 8px;
 }
 
 .record-section-head h2 {
   margin: 0;
+  letter-spacing: 0;
 }
 
 .record-section-head > span {
@@ -1110,13 +1111,13 @@ main:has(.paper-section:target) .record-section {
 }
 
 .record-trend {
-  padding: 22px;
+  padding: 24px 26px 22px;
 }
 
 .sleep-trend-plot {
   display: block;
   width: 100%;
-  min-height: 320px;
+  height: auto;
 }
 
 .trend-gridline line {
@@ -1126,16 +1127,16 @@ main:has(.paper-section:target) .record-section {
 
 .trend-gridline text {
   fill: rgba(255, 231, 206, .52);
-  font-size: 14px;
+  font-size: 18px;
   text-anchor: end;
 }
 
 .trend-area {
-  fill: rgba(201, 138, 107, .14);
+  fill: url("#sleepArea");
 }
 
 .trend-bar {
-  fill: rgba(255, 238, 218, .13);
+  fill: url("#sleepBar");
 }
 
 .trend-line {
@@ -1143,7 +1144,7 @@ main:has(.paper-section:target) .record-section {
   stroke: #ffd2a8;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 5;
+  stroke-width: 6;
 }
 
 .trend-point circle {
@@ -1155,19 +1156,19 @@ main:has(.paper-section:target) .record-section {
 .trend-value,
 .trend-label {
   fill: rgba(255, 238, 218, .78);
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 720;
   text-anchor: middle;
 }
 
 .trend-label {
   fill: rgba(255, 231, 206, .55);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .latest-entries {
-  padding: 18px;
+  padding: 20px;
 }
 
 .latest-entry-list {
@@ -1177,10 +1178,10 @@ main:has(.paper-section:target) .record-section {
 
 .latest-entry {
   display: grid;
-  grid-template-columns: minmax(126px, .75fr) auto minmax(260px, 1.25fr);
-  gap: 14px;
+  grid-template-columns: minmax(132px, .7fr) auto minmax(280px, 1.15fr);
+  gap: 18px;
   align-items: center;
-  padding: 13px 0;
+  padding: 16px 0;
   border-top: 1px solid rgba(255, 228, 199, .1);
 }
 
@@ -1223,12 +1224,37 @@ main:has(.paper-section:target) .record-section {
   display: inline-flex;
   align-items: center;
   min-height: 27px;
-  padding: 0 9px;
+  padding: 0 10px;
   border: 1px solid rgba(255, 228, 199, .1);
   border-radius: 999px;
   background: rgba(255, 238, 218, .055);
   font-size: 12px;
   white-space: nowrap;
+}
+
+.entry-stages span::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 999px;
+  background: rgba(255, 238, 218, .5);
+}
+
+.entry-stages span:nth-child(1)::before {
+  background: #a9cad3;
+}
+
+.entry-stages span:nth-child(2)::before {
+  background: #dce5e3;
+}
+
+.entry-stages span:nth-child(3)::before {
+  background: #6788a0;
+}
+
+.entry-stages span:nth-child(4)::before {
+  background: #bec982;
 }
 
 .night-bars {
@@ -1699,11 +1725,7 @@ figcaption {
 
   .record-trend,
   .latest-entries {
-    padding: 14px;
-  }
-
-  .sleep-trend-plot {
-    min-height: 250px;
+    padding: 16px;
   }
 
   .trend-value {
@@ -1741,9 +1763,9 @@ figcaption {
   min-height: 100vh;
   display: flow-root;
   background:
-    radial-gradient(circle at 84% 20%, rgba(168, 222, 225, .20), transparent 32%),
-    linear-gradient(90deg, rgba(4, 8, 9, .26) 0%, rgba(4, 8, 9, .12) 42%, rgba(4, 8, 9, .64) 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(3, 7, 8, .56)),
+    radial-gradient(circle at 18% 22%, rgba(236, 248, 244, .12), transparent 30%),
+    linear-gradient(90deg, rgba(4, 8, 9, .18) 0%, rgba(4, 8, 9, .08) 42%, rgba(4, 8, 9, .54) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(3, 7, 8, .50)),
     url("./assets/sleep-background.jpg") center center / cover fixed no-repeat,
     #0f1618;
   color: #edf8f3;
@@ -1788,34 +1810,38 @@ figcaption {
   justify-content: flex-start;
   align-items: flex-start;
   min-height: 100vh;
-  padding: clamp(34px, 7vh, 72px) clamp(18px, 5.4vw, 78px) 72px;
+  padding: clamp(32px, 6vh, 62px) clamp(18px, 5.4vw, 78px) 72px;
   background: transparent;
   color: #edf8f3;
 }
 
 .is-reading-record .record-shell {
+  position: relative;
   width: min(920px, 100%);
   margin: 0;
-  padding: clamp(20px, 2.9vw, 30px);
-  border: 1px solid rgba(219, 246, 239, .26);
-  border-radius: 8px;
+  padding: clamp(22px, 2.8vw, 32px);
+  border: 1px solid rgba(226, 248, 241, .28);
+  border-radius: 14px;
   background:
-    linear-gradient(145deg, rgba(9, 22, 25, .83), rgba(17, 41, 45, .70)),
-    linear-gradient(180deg, rgba(211, 239, 232, .08), rgba(0, 0, 0, .08));
-  box-shadow: 0 30px 110px rgba(0, 0, 0, .38);
-  backdrop-filter: blur(18px) saturate(1.18);
+    radial-gradient(circle at 78% 6%, rgba(232, 247, 242, .12), transparent 34%),
+    linear-gradient(145deg, rgba(7, 20, 23, .88), rgba(16, 38, 42, .76)),
+    linear-gradient(180deg, rgba(245, 252, 249, .10), rgba(0, 0, 0, .10));
+  box-shadow:
+    0 32px 120px rgba(0, 0, 0, .42),
+    inset 0 1px 0 rgba(255, 255, 255, .10);
+  backdrop-filter: blur(22px) saturate(1.22);
 }
 
 .is-reading-record .record-head {
   gap: 6px;
-  margin-bottom: 18px;
-  padding-bottom: 16px;
+  margin-bottom: 20px;
+  padding: 0 250px 18px 0;
   border-bottom: 1px solid rgba(219, 246, 239, .16);
 }
 
 .is-reading-record .record-head h1 {
   color: #f5fbf6;
-  font-size: clamp(34px, 4.4vw, 48px);
+  font-size: clamp(34px, 4vw, 46px);
   line-height: 1.02;
   letter-spacing: 0;
 }
@@ -1845,11 +1871,13 @@ figcaption {
 .is-reading-record .record-token button,
 .is-reading-record .record-toolbar button,
 .is-reading-record .bridge-download {
-  border-color: rgba(219, 246, 239, .22);
-  border-radius: 6px;
-  background: rgba(238, 248, 244, .92);
+  border-color: rgba(238, 248, 244, .34);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(248, 255, 252, .98), rgba(221, 238, 233, .95));
   color: #132025;
   font-weight: 650;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
 }
 
 .is-reading-record .record-token button:hover,
@@ -1859,7 +1887,14 @@ figcaption {
 }
 
 .is-reading-record .record-toolbar {
-  margin-bottom: 16px;
+  position: absolute;
+  top: clamp(22px, 2.8vw, 32px);
+  right: clamp(22px, 2.8vw, 32px);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 0;
+  text-align: right;
 }
 
 .is-reading-record .bridge-install,
@@ -1867,9 +1902,13 @@ figcaption {
 .is-reading-record .record-summary,
 .is-reading-record .record-chart,
 .is-reading-record .record-list {
-  border-color: rgba(219, 246, 239, .16);
-  border-radius: 8px;
-  background: rgba(238, 248, 244, .11);
+  border-color: rgba(226, 248, 241, .18);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(244, 252, 249, .13), rgba(188, 218, 219, .09));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .06),
+    0 14px 42px rgba(0, 0, 0, .12);
 }
 
 .is-reading-record .bridge-install {
@@ -1909,7 +1948,7 @@ figcaption {
 }
 
 .is-reading-record .record-content {
-  gap: 14px;
+  gap: 16px;
 }
 
 .is-reading-record .record-summary {
@@ -1981,7 +2020,7 @@ figcaption {
 }
 
 .is-reading-record .trend-gridline line {
-  stroke: rgba(219, 246, 239, .13);
+  stroke: rgba(219, 246, 239, .15);
 }
 
 .is-reading-record .trend-gridline text {
@@ -1989,20 +2028,22 @@ figcaption {
 }
 
 .is-reading-record .trend-area {
-  fill: rgba(143, 183, 200, .18);
+  fill: url("#sleepArea");
 }
 
 .is-reading-record .trend-bar {
-  fill: rgba(238, 248, 244, .12);
+  fill: url("#sleepBar");
 }
 
 .is-reading-record .trend-line {
   stroke: #e7f8ef;
+  filter: drop-shadow(0 7px 12px rgba(7, 23, 27, .42));
 }
 
 .is-reading-record .trend-point circle {
   fill: #f5fbf6;
   stroke: rgba(17, 38, 43, .55);
+  filter: drop-shadow(0 5px 8px rgba(5, 18, 21, .35));
 }
 
 .is-reading-record .trend-value,
@@ -2045,15 +2086,19 @@ figcaption {
     display: block;
     justify-content: center;
     min-height: 100vh;
-    padding: 45vh 28px 42px;
+    padding: 43vh 24px 42px;
   }
 
   .is-reading-record .record-shell {
-    width: calc(100vw - 56px) !important;
+    width: calc(100vw - 48px) !important;
     max-width: none;
     min-width: 0;
     margin: 0 auto;
     padding: 16px;
+  }
+
+  .is-reading-record .record-head {
+    padding-right: 0;
   }
 
   .is-reading-record .record-token,
@@ -2061,6 +2106,13 @@ figcaption {
   .is-reading-record .bridge-install {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .is-reading-record .record-toolbar {
+    position: static;
+    align-items: stretch;
+    margin: 0 0 16px;
+    text-align: left;
   }
 
   .is-reading-record .record-token input,
@@ -2088,6 +2140,194 @@ figcaption {
 .is-reading-record .record-token[hidden],
 .is-reading-record .bridge-install[hidden] {
   display: none;
+}
+
+.is-reading-record {
+  background:
+    linear-gradient(90deg, rgba(8, 12, 11, .14) 0%, rgba(8, 12, 11, .04) 45%, rgba(8, 12, 11, .34) 100%),
+    linear-gradient(180deg, rgba(255, 252, 244, .03), rgba(7, 12, 12, .28)),
+    url("./assets/sleep-background.jpg") center center / cover fixed no-repeat,
+    #151716;
+  color: #16201f;
+}
+
+.is-reading-record .record-section {
+  padding: clamp(32px, 5.2vh, 58px) clamp(18px, 5.4vw, 78px) 72px;
+}
+
+.is-reading-record .record-shell {
+  width: min(960px, 100%);
+  border-color: rgba(255, 255, 255, .56);
+  border-radius: 8px;
+  color: #16201f;
+  background:
+    linear-gradient(145deg, rgba(249, 246, 235, .88), rgba(228, 236, 231, .76)),
+    rgba(246, 241, 228, .80);
+  box-shadow:
+    0 30px 110px rgba(6, 10, 10, .36),
+    inset 0 1px 0 rgba(255, 255, 255, .62);
+  backdrop-filter: blur(26px) saturate(1.08);
+}
+
+.is-reading-record .record-head {
+  border-bottom-color: rgba(35, 49, 46, .14);
+}
+
+.is-reading-record .record-head h1 {
+  color: #12201f;
+  text-shadow: none;
+}
+
+.is-reading-record .record-head p,
+.is-reading-record .record-toolbar,
+.is-reading-record .record-boundary p,
+.is-reading-record .record-note,
+.is-reading-record .record-meta {
+  color: rgba(24, 35, 34, .66);
+}
+
+.is-reading-record .record-token button,
+.is-reading-record .record-toolbar button,
+.is-reading-record .bridge-download {
+  min-height: 40px;
+  border-color: rgba(37, 58, 55, .14);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 253, 246, .94), rgba(235, 239, 231, .90));
+  color: #14211f;
+  box-shadow:
+    0 8px 20px rgba(18, 28, 27, .12),
+    inset 0 1px 0 rgba(255, 255, 255, .72);
+}
+
+.is-reading-record .record-token button:hover,
+.is-reading-record .record-toolbar button:hover,
+.is-reading-record .bridge-download:hover {
+  background: #fffdf5;
+}
+
+.is-reading-record .bridge-install,
+.is-reading-record .record-boundary,
+.is-reading-record .record-summary,
+.is-reading-record .record-chart,
+.is-reading-record .record-list {
+  border-color: rgba(40, 58, 54, .16);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 252, 243, .60), rgba(229, 238, 235, .45)),
+    rgba(255, 251, 239, .42);
+  box-shadow:
+    0 14px 44px rgba(21, 32, 31, .10),
+    inset 0 1px 0 rgba(255, 255, 255, .54);
+}
+
+.is-reading-record .record-boundary strong,
+.is-reading-record .record-chart h2,
+.is-reading-record .record-list h2 {
+  color: #172321;
+}
+
+.is-reading-record .record-section-head > span {
+  color: rgba(24, 35, 34, .52);
+}
+
+.is-reading-record .trend-gridline line {
+  stroke: rgba(31, 45, 43, .13);
+}
+
+.is-reading-record .trend-gridline text,
+.is-reading-record .trend-label {
+  fill: rgba(25, 38, 36, .55);
+}
+
+.is-reading-record .trend-area {
+  fill: url("#sleepArea");
+}
+
+.is-reading-record .trend-bar {
+  fill: url("#sleepBar");
+}
+
+.is-reading-record .trend-line {
+  stroke: #234e58;
+  filter: drop-shadow(0 8px 12px rgba(41, 70, 72, .18));
+}
+
+.is-reading-record .trend-point circle {
+  fill: #faf5e8;
+  stroke: #244e56;
+  filter: drop-shadow(0 4px 7px rgba(31, 55, 56, .18));
+}
+
+.is-reading-record .trend-value {
+  fill: #1d3231;
+}
+
+.is-reading-record .latest-entry {
+  border-top-color: rgba(34, 49, 46, .13);
+}
+
+.is-reading-record .latest-entry-main strong,
+.is-reading-record .latest-entry-duration {
+  color: #13211f;
+}
+
+.is-reading-record .latest-entry-main span {
+  color: rgba(24, 35, 34, .62);
+}
+
+.is-reading-record .entry-stages {
+  gap: 8px 16px;
+}
+
+.is-reading-record .entry-stages span {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(24, 35, 34, .58);
+}
+
+.is-reading-record .entry-stages span::before {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .42);
+}
+
+@media (max-width: 760px) {
+  .is-reading-record {
+    background:
+      linear-gradient(180deg, rgba(255, 252, 244, .02), rgba(8, 12, 12, .38)),
+      url("./assets/sleep-background.jpg") center top / 100vw auto no-repeat,
+      #121715;
+  }
+
+  .is-reading-record .record-section {
+    padding: 43vh 20px 42px;
+  }
+
+  .is-reading-record .record-shell {
+    width: calc(100vw - 40px) !important;
+    padding: 16px;
+    background:
+      linear-gradient(145deg, rgba(249, 246, 235, .90), rgba(228, 236, 231, .80)),
+      rgba(246, 241, 228, .84);
+  }
+
+  .is-reading-record .record-toolbar {
+    position: static;
+    align-items: stretch;
+    margin: 0 0 14px;
+    text-align: left;
+  }
+
+  .is-reading-record .record-head {
+    padding-right: 0;
+  }
+
+  .is-reading-record .entry-stages {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
