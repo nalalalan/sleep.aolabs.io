@@ -20,6 +20,7 @@ const AUTO_START_MS = 4 * 1000;
 const IDLE_RELEASE_AFTER_MS = 5 * 60 * 1000;
 const IDLE_RELEASE_FADE_MS = 5 * 60 * 1000;
 const READ_TOKEN_KEY = "sleep.readToken";
+const RECORD_START_DATE = "2026-05-01";
 const LIVE_API_BASE = "https://sleep.aolabs.io";
 const configuredApiBase = document.querySelector("meta[name='sleep-api-base']")?.content || "";
 const API_BASE = (configuredApiBase || (location.hostname === "aolabs.io" ? LIVE_API_BASE : "")).replace(/\/$/, "");
@@ -363,6 +364,10 @@ function stageTotal(stageMinutes, keys) {
   return keys.reduce((sum, key) => sum + (stageMinutes?.[key] || 0), 0);
 }
 
+function isDisplayedNight(night) {
+  return (night?.sleepDate || "") >= RECORD_START_DATE;
+}
+
 function renderRecordBoundary(message, detail = "") {
   if (!recordContent) return;
   recordContent.innerHTML = `
@@ -376,7 +381,16 @@ function renderRecordBoundary(message, detail = "") {
 function renderRecordLog(data) {
   if (!recordContent) return;
 
-  const trend = [...(data.trend || [])].sort((a, b) => new Date(`${a.sleepDate}T12:00:00`) - new Date(`${b.sleepDate}T12:00:00`));
+  const trend = [...(data.trend || [])]
+    .filter(isDisplayedNight)
+    .sort((a, b) => new Date(`${a.sleepDate}T12:00:00`) - new Date(`${b.sleepDate}T12:00:00`));
+  const nights = [...(data.nights || [])].filter(isDisplayedNight);
+
+  if (!trend.length || !nights.length) {
+    renderRecordBoundary("No May records yet.", "Sleep sessions before May 2026 are hidden from this view.");
+    return;
+  }
+
   const maxDuration = Math.max(60, ...trend.map((night) => night.durationMinutes || 0));
   const maxHours = Math.max(4, Math.ceil(maxDuration / 60));
   const width = 780;
@@ -414,7 +428,7 @@ function renderRecordLog(data) {
     `;
   }).join("");
 
-  const entries = data.nights.slice(0, 10).map((night) => {
+  const entries = nights.slice(0, 10).map((night) => {
     const stages = night.stageMinutes || {};
     const asleep = stageTotal(stages, ["deep", "rem", "light", "sleeping", "unknown"]);
     return `
@@ -437,10 +451,10 @@ function renderRecordLog(data) {
   recordContent.innerHTML = `
     <div class="record-chart record-trend">
       <div class="record-section-head">
-        <h2>Sleep hours over time</h2>
-        <span>${data.nightCount} ${data.nightCount === 1 ? "night" : "nights"} stored</span>
+        <h2>Hours by night</h2>
+        <span>${nights.length} ${nights.length === 1 ? "night" : "nights"} stored</span>
       </div>
-      <svg class="sleep-trend-plot" viewBox="0 0 ${width} ${height}" role="img" aria-label="Sleep hours over time">
+      <svg class="sleep-trend-plot" viewBox="0 0 ${width} ${height}" role="img" aria-label="Sleep hours by night">
         ${grid}
         ${linePoints ? `<polyline class="trend-line" points="${linePoints}"></polyline>` : ""}
         ${markers}
@@ -495,7 +509,7 @@ async function loadRecord() {
     }
 
     if (bridgeInstall) bridgeInstall.hidden = true;
-    recordState.textContent = "Sleep hours over time.";
+    recordState.textContent = "May 2026 onward.";
     recordUpdated.textContent = data.lastCapturedAt ? `Last bridge sync ${formatDateTime(data.lastCapturedAt)}.` : `Generated ${formatDateTime(data.generatedAt)}.`;
     renderRecordLog(data);
   } catch (error) {
