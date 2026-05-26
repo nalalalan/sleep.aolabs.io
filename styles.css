@@ -2343,6 +2343,48 @@ body.is-reading-record {
   font-size: clamp(14px, 1.7vh, 17px);
 }
 
+.is-reading-record .record-suite-links {
+  position: absolute;
+  top: clamp(16px, 2.2vw, 24px);
+  right: clamp(104px, 9.5vw, 120px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.is-reading-record .record-suite-links a {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(37, 58, 55, .14);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 253, 246, .88), rgba(235, 239, 231, .80));
+  color: #14211f;
+  text-decoration: none;
+  box-shadow:
+    0 8px 20px rgba(18, 28, 27, .10),
+    inset 0 1px 0 rgba(255, 255, 255, .72);
+}
+
+.is-reading-record .record-suite-links a:hover {
+  background: #fffdf5;
+}
+
+.is-reading-record .record-suite-links img {
+  display: block;
+  width: 23px;
+  height: 23px;
+  object-fit: contain;
+}
+
+.is-reading-record .record-suite-links .bridge-icon,
+.is-reading-record .record-suite-links .paper-icon {
+  color: rgba(20, 33, 31, .82);
+  opacity: .9;
+}
+
 .is-reading-record .record-toolbar {
   top: clamp(16px, 2.2vw, 24px);
   right: clamp(16px, 2.2vw, 24px);
@@ -2468,7 +2510,7 @@ body.is-reading-record {
 
   .is-reading-record .record-head {
     margin-bottom: 6px;
-    padding: 0 0 7px;
+    padding: 0 126px 7px 0;
   }
 
   .is-reading-record .record-head h1 {
@@ -2488,6 +2530,29 @@ body.is-reading-record {
     gap: 10px;
     margin: 0 0 8px;
     text-align: left;
+  }
+
+  .is-reading-record .record-suite-links {
+    top: 12px;
+    right: 12px;
+    gap: 4px;
+  }
+
+  .is-reading-record .record-suite-links a {
+    width: 27px;
+    height: 27px;
+    border-radius: 7px;
+  }
+
+  .is-reading-record .record-suite-links img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .is-reading-record .record-suite-links .record-icon,
+  .is-reading-record .record-suite-links .bridge-icon,
+  .is-reading-record .record-suite-links .paper-icon {
+    transform: scale(.82);
   }
 
   .is-reading-record .record-toolbar button {

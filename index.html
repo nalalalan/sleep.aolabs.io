@@ -24,7 +24,7 @@
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="preload" as="image" href="./assets/sleep-background.jpg">
-  <link rel="stylesheet" href="./styles.css?v=20260525-may-onward">
+  <link rel="stylesheet" href="./styles.css?v=20260526-suite-links">
 </head>
 <body class="is-reading-record">
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -102,6 +102,21 @@
           <h1 id="record-title">Sleep log</h1>
           <p id="record-state">Samsung Health sleep sessions sync here after the Android bridge runs.</p>
         </div>
+
+        <nav class="record-suite-links" aria-label="AO Labs navigation">
+          <a href="https://aolabs.io/" aria-label="aolabs.io">
+            <img src="./marks/ao-ink.svg" alt="">
+          </a>
+          <a href="./" aria-label="sleep home">
+            <img src="./icon.svg" alt="">
+          </a>
+          <a href="./downloads/sleep-bridge.apk" download aria-label="download Android bridge">
+            <span class="bridge-icon" aria-hidden="true"></span>
+          </a>
+          <a href="#paper" aria-label="paper">
+            <span class="paper-icon" aria-hidden="true"></span>
+          </a>
+        </nav>
 
         <form class="record-token" id="record-token-form" hidden>
           <input id="record-token-input" type="password" autocomplete="off" placeholder="read token" aria-label="read token">
@@ -235,6 +250,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260525-may-onward" defer></script>
+  <script src="./app.js?v=20260526-suite-links" defer></script>
 </body>
 </html>
