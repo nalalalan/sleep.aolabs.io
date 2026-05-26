@@ -944,6 +944,12 @@ main:has(.paper-section:target) .record-section {
   background: rgba(255, 238, 218, .14);
 }
 
+.record-toolbar button:disabled,
+.record-toolbar button[aria-busy="true"] {
+  cursor: progress;
+  opacity: .82;
+}
+
 .record-secondary {
   display: inline-flex;
   align-items: center;
@@ -2187,6 +2193,16 @@ figcaption {
 .is-reading-record .record-toolbar button:hover,
 .is-reading-record .bridge-download:hover {
   background: #fffdf5;
+}
+
+.is-reading-record .record-toolbar button:disabled,
+.is-reading-record .record-toolbar button[aria-busy="true"] {
+  background:
+    linear-gradient(180deg, rgba(237, 248, 245, .96), rgba(205, 226, 221, .92));
+  color: rgba(20, 33, 31, .72);
+  box-shadow:
+    0 6px 16px rgba(18, 28, 27, .10),
+    inset 0 1px 0 rgba(255, 255, 255, .68);
 }
 
 .is-reading-record .bridge-install,
