@@ -2455,6 +2455,18 @@ body.is-reading-record {
   fill: rgba(24, 35, 34, .56);
 }
 
+.is-reading-record .trend-window rect {
+  fill: rgba(248, 247, 239, .82);
+  stroke: rgba(20, 33, 31, .12);
+}
+
+.is-reading-record .trend-window text {
+  fill: rgba(20, 33, 31, .72);
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
 .is-reading-record .trend-value {
   fill: #172321;
   font-size: 19px;
@@ -2539,7 +2551,7 @@ body.is-reading-record {
   }
 
   .is-reading-record .record-suite-links a {
-    width: 27px;
+    width: 30px;
     height: 27px;
     border-radius: 7px;
   }
@@ -2594,6 +2606,10 @@ body.is-reading-record {
   .is-reading-record .trend-label,
   .is-reading-record .trend-gridline text {
     font-size: 13px;
+  }
+
+  .is-reading-record .trend-window text {
+    font-size: 24px;
   }
 
   .is-reading-record .trend-value {

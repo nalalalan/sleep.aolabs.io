@@ -360,6 +360,13 @@ function formatTime(value) {
   });
 }
 
+function formatSleepWindow(startValue, endValue) {
+  const start = formatTime(startValue);
+  const end = formatTime(endValue);
+  if (!start || !end) return "";
+  return `${start} to ${end}`;
+}
+
 function stageTotal(stageMinutes, keys) {
   return keys.reduce((sum, key) => sum + (stageMinutes?.[key] || 0), 0);
 }
@@ -381,10 +388,20 @@ function renderRecordBoundary(message, detail = "") {
 function renderRecordLog(data) {
   if (!recordContent) return;
 
+  const nights = [...(data.nights || [])].filter(isDisplayedNight);
+  const nightByDate = new Map(nights.map((night) => [night.sleepDate, night]));
   const trend = [...(data.trend || [])]
     .filter(isDisplayedNight)
+    .map((night) => {
+      const matchingNight = nightByDate.get(night.sleepDate) || {};
+      return {
+        ...matchingNight,
+        ...night,
+        startTime: night.startTime || matchingNight.startTime,
+        endTime: night.endTime || matchingNight.endTime
+      };
+    })
     .sort((a, b) => new Date(`${a.sleepDate}T12:00:00`) - new Date(`${b.sleepDate}T12:00:00`));
-  const nights = [...(data.nights || [])].filter(isDisplayedNight);
 
   if (!trend.length || !nights.length) {
     renderRecordBoundary("No May records yet.", "Sleep sessions before May 2026 are hidden from this view.");
@@ -396,6 +413,7 @@ function renderRecordLog(data) {
   const width = 780;
   const height = 390;
   const pad = { top: 48, right: 28, bottom: 58, left: 56 };
+  const compactRecord = window.matchMedia("(max-width: 760px)").matches;
   const plotWidth = width - pad.left - pad.right;
   const plotHeight = height - pad.top - pad.bottom;
   const xFor = (index) => pad.left + (trend.length === 1 ? plotWidth / 2 : (index / (trend.length - 1)) * plotWidth);
@@ -419,10 +437,28 @@ function renderRecordLog(data) {
   const tickEvery = Math.max(1, Math.ceil(trend.length / 8));
   const markers = points.map((point, index) => {
     const showLabel = trend.length <= 8 || index === 0 || index === trend.length - 1 || index % tickEvery === 0;
+    const windowLabel = formatSleepWindow(point.night.startTime, point.night.endTime);
+    const badgeWidth = windowLabel
+      ? (compactRecord
+          ? Math.min(260, Math.max(190, windowLabel.length * 12.2 + 34))
+          : Math.min(166, Math.max(116, windowLabel.length * 7.6 + 22)))
+      : 0;
+    const badgeHeight = compactRecord ? 38 : 25;
+    const badgeX = clamp(point.x - badgeWidth / 2, pad.left + 2, pad.left + plotWidth - badgeWidth - 2);
+    const badgeY = point.y + badgeHeight + 8 > pad.top + plotHeight - 6
+      ? point.y - badgeHeight - 20
+      : point.y + 17;
+    const badgeTextY = compactRecord ? 25 : 16.8;
     return `
       <g class="trend-point">
         <circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="6"></circle>
         <text class="trend-value" x="${point.x.toFixed(1)}" y="${(point.y - 13).toFixed(1)}">${formatMinutes(point.night.durationMinutes)}</text>
+        ${showLabel && windowLabel ? `
+          <g class="trend-window" transform="translate(${badgeX.toFixed(1)} ${badgeY.toFixed(1)})">
+            <rect width="${badgeWidth.toFixed(1)}" height="${badgeHeight}" rx="8"></rect>
+            <text x="${(badgeWidth / 2).toFixed(1)}" y="${badgeTextY}">${windowLabel}</text>
+          </g>
+        ` : ""}
         ${showLabel ? `<text class="trend-label" x="${point.x.toFixed(1)}" y="${height - 22}">${formatNightDate(point.night.sleepDate)}</text>` : ""}
       </g>
     `;
