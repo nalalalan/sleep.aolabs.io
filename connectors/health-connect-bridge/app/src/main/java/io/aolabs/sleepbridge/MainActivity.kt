@@ -35,10 +35,11 @@ class MainActivity : ComponentActivity() {
         PermissionController.createRequestPermissionResultContract()
     ) { granted ->
         if (granted.contains(SleepBridgeSync.sleepPermission)) {
-            SleepBridgeSync.scheduleAutoSync(this)
-            SleepBridgeSync.queueImmediateSync(this)
-            val auto = if (granted.contains(SleepBridgeSync.backgroundPermission)) " Auto sync enabled." else " Background sync permission still missing."
-            setStatus("Sleep permission granted.$auto")
+            if (granted.contains(SleepBridgeSync.backgroundPermission)) {
+                ensureAutoSync("Sleep permission granted. Auto sync scheduled.")
+            } else {
+                setStatus("Sleep permission granted. Background sync permission still missing.")
+            }
         } else {
             setStatus("Sleep permission not granted.")
         }
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
         loadSettings()
         checkAvailability()
         if (SleepBridgeSync.token(this).isNotBlank()) {
-            SleepBridgeSync.scheduleAutoSync(this)
+            ensureAutoSync("Auto sync scheduled from saved bridge token.")
         }
     }
 
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
         })
 
         root.addView(TextView(this).apply {
-            text = "Reads completed Health Connect sleep sessions and sends them to sleep.aolabs.io."
+            text = "Reads completed Health Connect sleep sessions and sends them to sleep.aolabs.io automatically after setup."
             textSize = 15f
             setPadding(0, padding / 2, 0, padding)
         })
@@ -91,7 +92,10 @@ class MainActivity : ComponentActivity() {
 
         root.addView(Button(this).apply {
             text = "Grant sleep permission"
-            setOnClickListener { requestPermissions.launch(permissions) }
+            setOnClickListener {
+                saveSettings()
+                requestPermissions.launch(permissions)
+            }
         })
 
         root.addView(Button(this).apply {
@@ -102,16 +106,6 @@ class MainActivity : ComponentActivity() {
         root.addView(Button(this).apply {
             text = "Sync last 60 days"
             setOnClickListener { syncSleep(days = 60) }
-        })
-
-        root.addView(Button(this).apply {
-            text = "Enable auto sync"
-            setOnClickListener {
-                saveSettings()
-                SleepBridgeSync.scheduleAutoSync(this@MainActivity)
-                SleepBridgeSync.queueImmediateSync(this@MainActivity)
-                setStatus("Auto sync scheduled. Android will check periodically after Health Connect has sleep data.")
-            }
         })
 
         statusText = TextView(this).apply {
@@ -136,6 +130,20 @@ class MainActivity : ComponentActivity() {
             endpointInput.text.toString().trim(),
             tokenInput.text.toString().trim()
         )
+    }
+
+    private fun ensureAutoSync(message: String, queueImmediate: Boolean = true): Boolean {
+        saveSettings()
+        if (SleepBridgeSync.token(this).isBlank()) {
+            setStatus("Bridge token required before auto sync can run.")
+            return false
+        }
+        SleepBridgeSync.scheduleAutoSync(this)
+        if (queueImmediate) {
+            SleepBridgeSync.queueImmediateSync(this)
+        }
+        setStatus(message)
+        return true
     }
 
     private fun checkAvailability() {
@@ -173,6 +181,10 @@ class MainActivity : ComponentActivity() {
             if (!granted.contains(SleepBridgeSync.backgroundPermission)) {
                 requestPermissions.launch(permissions)
             }
+            ensureAutoSync(
+                "Auto sync scheduled. Android will check periodically after Samsung Health writes sleep to Health Connect.",
+                queueImmediate = false
+            )
 
             try {
                 val payload = withContext(Dispatchers.IO) { readSleepPayload(client, days) }
@@ -184,8 +196,7 @@ class MainActivity : ComponentActivity() {
 
                 setStatus("Sending $accepted sleep session(s).")
                 val response = withContext(Dispatchers.IO) { postPayload(endpoint, token, payload) }
-                SleepBridgeSync.scheduleAutoSync(this@MainActivity)
-                SleepBridgeSync.queueImmediateSync(this@MainActivity)
+                ensureAutoSync("Manual sync accepted. Auto sync is scheduled for future nights.", queueImmediate = false)
                 setStatus(response)
             } catch (error: Exception) {
                 setStatus("Sync failed: ${error.message ?: error.javaClass.simpleName}")

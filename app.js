@@ -348,6 +348,16 @@ function localDateKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+function clockAxisMinutes(value, sleepDate) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  const minutes = date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
+  const dateKey = localDateKey(date);
+  if (dateKey < sleepDate) return 0;
+  if (dateKey > sleepDate) return 12 * 60;
+  return clamp(minutes, 0, 12 * 60);
+}
+
 function formatDateTime(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
@@ -366,13 +376,6 @@ function formatTime(value) {
     hour: "numeric",
     minute: "2-digit"
   });
-}
-
-function formatSleepWindow(startValue, endValue) {
-  const start = formatTime(startValue);
-  const end = formatTime(endValue);
-  if (!start || !end) return "";
-  return `${start} to ${end}`;
 }
 
 function stageTotal(stageMinutes, keys) {
@@ -469,16 +472,18 @@ function renderRecordLog(data) {
   const maxHours = Math.max(4, Math.ceil(maxDuration / 60));
   const width = 780;
   const height = 390;
-  const pad = { top: 48, right: 28, bottom: 58, left: 56 };
-  const compactRecord = window.matchMedia("(max-width: 760px)").matches;
+  const pad = { top: 48, right: 70, bottom: 58, left: 56 };
   const plotWidth = width - pad.left - pad.right;
   const plotHeight = height - pad.top - pad.bottom;
   const xFor = (index) => pad.left + (trend.length === 1 ? plotWidth / 2 : (index / (trend.length - 1)) * plotWidth);
   const yFor = (minutes) => pad.top + plotHeight - ((minutes || 0) / (maxHours * 60)) * plotHeight;
+  const yForClock = (minutes) => pad.top + plotHeight - ((minutes || 0) / (12 * 60)) * plotHeight;
   const points = trend.map((night, index) => ({
     night,
     x: xFor(index),
-    y: yFor(night.durationMinutes || 0)
+    y: yFor(night.durationMinutes || 0),
+    sleepStartY: yForClock(clockAxisMinutes(night.startTime, night.sleepDate) || 0),
+    sleepEndY: yForClock(clockAxisMinutes(night.endTime, night.sleepDate) || 0)
   }));
   const linePoints = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
   const gridValues = Array.from(new Set([0, Math.ceil(maxHours / 2), maxHours]));
@@ -491,31 +496,38 @@ function renderRecordLog(data) {
       </g>
     `;
   }).join("");
+  const clockAxisX = pad.left + plotWidth;
+  const clockAxis = [
+    [12 * 60, "12p"],
+    [6 * 60, "6a"],
+    [0, "12a"]
+  ].map(([minutes, label]) => {
+    const y = yForClock(minutes);
+    return `
+      <g class="clock-axis-tick">
+        <line x1="${clockAxisX}" y1="${y.toFixed(1)}" x2="${(clockAxisX + 8).toFixed(1)}" y2="${y.toFixed(1)}"></line>
+        <text x="${(clockAxisX + 16).toFixed(1)}" y="${(y + 4).toFixed(1)}">${label}</text>
+      </g>
+    `;
+  }).join("");
+  const sleepWindows = points.map((point) => {
+    const y1 = Math.min(point.sleepStartY, point.sleepEndY);
+    const y2 = Math.max(point.sleepStartY, point.sleepEndY);
+    return `
+      <g class="sleep-window-range">
+        <line x1="${point.x.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${point.x.toFixed(1)}" y2="${y2.toFixed(1)}"></line>
+        <circle cx="${point.x.toFixed(1)}" cy="${point.sleepStartY.toFixed(1)}" r="4"></circle>
+        <circle cx="${point.x.toFixed(1)}" cy="${point.sleepEndY.toFixed(1)}" r="4"></circle>
+      </g>
+    `;
+  }).join("");
   const tickEvery = Math.max(1, Math.ceil(trend.length / 8));
   const markers = points.map((point, index) => {
     const showLabel = trend.length <= 8 || index === 0 || index === trend.length - 1 || index % tickEvery === 0;
-    const windowLabel = formatSleepWindow(point.night.startTime, point.night.endTime);
-    const badgeWidth = windowLabel
-      ? (compactRecord
-          ? Math.min(260, Math.max(190, windowLabel.length * 12.2 + 34))
-          : Math.min(166, Math.max(116, windowLabel.length * 7.6 + 22)))
-      : 0;
-    const badgeHeight = compactRecord ? 38 : 25;
-    const badgeX = clamp(point.x - badgeWidth / 2, pad.left + 2, pad.left + plotWidth - badgeWidth - 2);
-    const badgeY = point.y + badgeHeight + 8 > pad.top + plotHeight - 6
-      ? point.y - badgeHeight - 20
-      : point.y + 17;
-    const badgeTextY = compactRecord ? 25 : 16.8;
     return `
       <g class="trend-point">
         <circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="6"></circle>
         <text class="trend-value" x="${point.x.toFixed(1)}" y="${(point.y - 13).toFixed(1)}">${formatMinutes(point.night.durationMinutes)}</text>
-        ${showLabel && windowLabel ? `
-          <g class="trend-window" transform="translate(${badgeX.toFixed(1)} ${badgeY.toFixed(1)})">
-            <rect width="${badgeWidth.toFixed(1)}" height="${badgeHeight}" rx="8"></rect>
-            <text x="${(badgeWidth / 2).toFixed(1)}" y="${badgeTextY}">${windowLabel}</text>
-          </g>
-        ` : ""}
         ${showLabel ? `<text class="trend-label" x="${point.x.toFixed(1)}" y="${height - 22}">${formatNightDate(point.night.sleepDate)}</text>` : ""}
       </g>
     `;
@@ -549,6 +561,9 @@ function renderRecordLog(data) {
       </div>
       <svg class="sleep-trend-plot" viewBox="0 0 ${width} ${height}" role="img" aria-label="Sleep hours by night">
         ${grid}
+        <line class="clock-axis-line" x1="${clockAxisX}" y1="${pad.top}" x2="${clockAxisX}" y2="${pad.top + plotHeight}"></line>
+        ${clockAxis}
+        ${sleepWindows}
         ${linePoints ? `<polyline class="trend-line" points="${linePoints}"></polyline>` : ""}
         ${markers}
       </svg>
