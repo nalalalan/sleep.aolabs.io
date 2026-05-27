@@ -10,6 +10,7 @@ const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "data");
 const DATA_FILE = process.env.SLEEP_DATA_FILE || path.join(DATA_DIR, "sleep-sessions.json");
 const DATABASE_URL = process.env.DATABASE_URL || "";
 const MAX_STORED_SESSIONS = Number.parseInt(process.env.SLEEP_MAX_SESSIONS || "730", 10);
+const PUBLIC_MIN_SLEEP_DATE = process.env.SLEEP_PUBLIC_MIN_DATE || "2026-05-01";
 const DEFAULT_ALLOWED_ORIGINS = [
   "https://sleep.aolabs.io",
   "https://aolabs.io",
@@ -353,6 +354,7 @@ function summarizeSessions(sessions) {
         capturedAt: session.capturedAt || null
       };
     })
+    .filter((session) => session.sleepDate >= PUBLIC_MIN_SLEEP_DATE)
     .sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
 
   if (!normalized.length) {
@@ -364,7 +366,8 @@ function summarizeSessions(sessions) {
       latest: null,
       nights: [],
       trend: [],
-      message: "No Health Connect sleep records yet."
+      publicMinSleepDate: PUBLIC_MIN_SLEEP_DATE,
+      message: "No May 2026 Health Connect sleep records yet."
     };
   }
 
@@ -432,6 +435,7 @@ function summarizeSessions(sessions) {
       .filter(Boolean)
       .sort()
       .at(-1) || null,
+    publicMinSleepDate: PUBLIC_MIN_SLEEP_DATE,
     nights: nightsDesc.slice(0, 14),
     trend: nightsDesc.slice(0, 30).reverse()
   };
@@ -445,6 +449,7 @@ app.get("/api/health", async (_req, res) => {
     storage: DATABASE_URL ? "postgres" : "json-file",
     ingestionTokenConfigured: Boolean(process.env.SLEEP_INGEST_TOKEN),
     summaryReadAccess: "public",
+    publicMinSleepDate: PUBLIC_MIN_SLEEP_DATE,
     exportReadTokenConfigured: Boolean(process.env.SLEEP_READ_TOKEN)
   });
 });
