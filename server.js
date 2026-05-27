@@ -96,14 +96,6 @@ function requireConfiguredToken(envName, purpose) {
   };
 }
 
-function maybeRequireReadToken(req, res, next) {
-  if (!process.env.SLEEP_READ_TOKEN) {
-    next();
-    return;
-  }
-  requireConfiguredToken("SLEEP_READ_TOKEN", "read")(req, res, next);
-}
-
 function parseTime(value, field) {
   const time = new Date(value);
   if (!value || Number.isNaN(time.getTime())) {
@@ -452,11 +444,12 @@ app.get("/api/health", async (_req, res) => {
     generatedAt: new Date().toISOString(),
     storage: DATABASE_URL ? "postgres" : "json-file",
     ingestionTokenConfigured: Boolean(process.env.SLEEP_INGEST_TOKEN),
-    readTokenConfigured: Boolean(process.env.SLEEP_READ_TOKEN)
+    summaryReadAccess: "public",
+    exportReadTokenConfigured: Boolean(process.env.SLEEP_READ_TOKEN)
   });
 });
 
-app.get("/api/sleep/summary", maybeRequireReadToken, async (_req, res, next) => {
+app.get("/api/sleep/summary", async (_req, res, next) => {
   try {
     res.json(summarizeSessions(await readSessions()));
   } catch (error) {
@@ -464,7 +457,7 @@ app.get("/api/sleep/summary", maybeRequireReadToken, async (_req, res, next) => 
   }
 });
 
-app.get("/api/sleep/export", maybeRequireReadToken, async (_req, res, next) => {
+app.get("/api/sleep/export", requireConfiguredToken("SLEEP_READ_TOKEN", "export"), async (_req, res, next) => {
   try {
     res.json({
       ok: true,

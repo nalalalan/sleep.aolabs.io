@@ -10,6 +10,7 @@ Download the current debug APK from `https://sleep.aolabs.io/downloads/sleep-bri
 - Reads completed `SleepSessionRecord` data after wake.
 - Posts session timing, source package, and stage intervals to the Sleep API.
 - Stores only the endpoint and bridge token locally on the phone.
+- Schedules Android background sync after setup and also queues an immediate sync when enabled.
 
 Samsung Health must be connected to Health Connect first. Watch sleep appears after the watch transfers data to the paired phone and Samsung Health finishes processing it.
 
@@ -27,8 +28,9 @@ The bridge needs a real Android phone. Health Connect and Samsung Health Data SD
 4. In the bridge, enter:
    - endpoint: `https://sleep.aolabs.io/api/ingest/sleep-sessions`
    - token: Railway `SLEEP_INGEST_TOKEN`
-5. Grant sleep permission.
-6. Tap sync after waking, once Samsung Health has the night's sleep visible.
+5. Grant sleep permission, including background Health Connect access when Android offers it.
+6. Tap `Enable auto sync` once. Android will periodically check for completed sleep records after Samsung Health writes them to Health Connect.
+7. `Sync last 14 days` and `Sync last 60 days` remain available for manual backfill.
 
 ## Notes
 

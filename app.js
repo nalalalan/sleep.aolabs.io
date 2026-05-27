@@ -11,15 +11,13 @@ const recordState = document.getElementById("record-state");
 const recordContent = document.getElementById("record-content");
 const recordRefresh = document.getElementById("record-refresh");
 const recordUpdated = document.getElementById("record-updated");
-const recordTokenForm = document.getElementById("record-token-form");
-const recordTokenInput = document.getElementById("record-token-input");
 const bridgeInstall = document.getElementById("bridge-install");
 
 const DURATION_MS = 13 * 60 * 1000;
 const AUTO_START_MS = 4 * 1000;
 const IDLE_RELEASE_AFTER_MS = 5 * 60 * 1000;
 const IDLE_RELEASE_FADE_MS = 5 * 60 * 1000;
-const READ_TOKEN_KEY = "sleep.readToken";
+const RECORD_POLL_MS = 15 * 1000;
 const RECORD_START_DATE = "2026-05-01";
 const LIVE_API_BASE = "https://sleep.aolabs.io";
 const configuredApiBase = document.querySelector("meta[name='sleep-api-base']")?.content || "";
@@ -39,6 +37,7 @@ let audio = null;
 let recordLoading = false;
 let lastRecordSignature = "";
 let recordRefreshResetTimer = 0;
+let recordPollTimer = 0;
 
 function setVar(name, value) {
   root.style.setProperty(name, value);
@@ -545,28 +544,28 @@ function renderRecordLog(data) {
 
 async function loadRecord(options = {}) {
   const manual = Boolean(options.manual);
+  const silent = Boolean(options.silent);
   if (!recordContent) return;
   if (recordLoading) {
     if (manual) recordUpdated.textContent = "Already checking Sleep API.";
     return;
   }
   recordLoading = true;
-  setRefreshState(manual ? "Checking" : "Loading", true);
-  recordUpdated.textContent = manual ? "Checking Sleep API." : "Loading record.";
+  if (!silent) {
+    setRefreshState(manual ? "Checking" : "Loading", true);
+    recordUpdated.textContent = manual ? "Checking Sleep API." : "Loading record.";
+  }
 
-  const token = localStorage.getItem(READ_TOKEN_KEY) || "";
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const summaryUrl = `${API_BASE}/api/sleep/summary?refresh=${Date.now()}`;
 
   try {
-    const response = await fetch(summaryUrl, { headers, cache: "no-store" });
+    const response = await fetch(summaryUrl, { cache: "no-store" });
     if (response.status === 401) {
-      recordTokenForm.hidden = false;
       if (bridgeInstall) bridgeInstall.hidden = true;
-      recordState.textContent = "Private sleep log locked.";
-      recordUpdated.textContent = "Read token required.";
-      renderRecordBoundary("Read token required.", "Enter the read token once in this browser to load nightly sleep hours.");
-      setRefreshState("Refresh");
+      recordState.textContent = "Sleep record unavailable.";
+      recordUpdated.textContent = "Public read path blocked.";
+      renderRecordBoundary("Sleep record unavailable.", "The public sleep summary should load without a token. The backend is still returning an authorization block.");
+      if (!silent) setRefreshState("Refresh");
       return;
     }
 
@@ -575,7 +574,7 @@ async function loadRecord(options = {}) {
       recordState.textContent = "Sleep API unavailable.";
       recordUpdated.textContent = `API returned ${response.status}.`;
       renderRecordBoundary("Sleep API unavailable.", "The record route is live, but the backend is not returning sleep state right now.");
-      setRefreshState("Retry", false, manual);
+      if (!silent) setRefreshState("Retry", false, manual);
       return;
     }
 
@@ -583,38 +582,52 @@ async function loadRecord(options = {}) {
     const signature = recordSignature(data);
     const changed = Boolean(lastRecordSignature && lastRecordSignature !== signature);
     lastRecordSignature = signature;
-    recordTokenForm.hidden = true;
 
     if (!data.recordCount) {
       if (bridgeInstall) bridgeInstall.hidden = false;
       recordState.textContent = "No synced sleep sessions yet.";
-      recordUpdated.textContent = manual ? `Checked ${formatTime(new Date().toISOString())}. No synced nights yet.` : "Waiting for first bridge sync.";
+      if (!silent) {
+        recordUpdated.textContent = manual ? `Checked ${formatTime(new Date().toISOString())}. No synced nights yet.` : "Waiting for first bridge sync.";
+      }
       renderRecordBoundary("No Health Connect records yet.");
-      setRefreshState(manual ? "Checked" : "Refresh", false, manual);
+      if (!silent) setRefreshState(manual ? "Checked" : "Refresh", false, manual);
       return;
     }
 
     if (bridgeInstall) bridgeInstall.hidden = true;
     recordState.textContent = "May 2026 onward.";
-    if (manual) {
+    if (manual || (silent && changed)) {
       const checkedAt = formatTime(new Date().toISOString());
       const sourceTime = data.lastCapturedAt ? `Last bridge sync ${formatDateTime(data.lastCapturedAt)}.` : `Generated ${formatDateTime(data.generatedAt)}.`;
       recordUpdated.textContent = `${changed ? "Updated" : "Checked"} ${checkedAt}. ${sourceTime}`;
-    } else {
+    } else if (!silent) {
       recordUpdated.textContent = data.lastCapturedAt ? `Last bridge sync ${formatDateTime(data.lastCapturedAt)}.` : `Generated ${formatDateTime(data.generatedAt)}.`;
     }
     renderRecordLog(data);
-    setRefreshState(manual ? (changed ? "Updated" : "Checked") : "Refresh", false, manual);
+    if (!silent) setRefreshState(manual ? (changed ? "Updated" : "Checked") : "Refresh", false, manual);
   } catch (error) {
     if (bridgeInstall) bridgeInstall.hidden = true;
     recordState.textContent = "Sleep API unreachable.";
-    recordUpdated.textContent = "Local or live backend not reachable.";
+    if (!silent) recordUpdated.textContent = "Local or live backend not reachable.";
     renderRecordBoundary("Sleep API unreachable.", "The page loaded, but the sleep record backend could not be reached from this browser.");
-    setRefreshState("Retry", false, manual);
+    if (!silent) setRefreshState("Retry", false, manual);
   } finally {
     recordLoading = false;
-    if (!manual) setRefreshState("Refresh");
+    if (!manual && !silent) setRefreshState("Refresh");
   }
+}
+
+function stopRecordPolling() {
+  window.clearTimeout(recordPollTimer);
+}
+
+function scheduleRecordPolling() {
+  stopRecordPolling();
+  if (!recordSection?.classList.contains("is-visible") || document.hidden) return;
+  recordPollTimer = window.setTimeout(async () => {
+    await loadRecord({ silent: true });
+    scheduleRecordPolling();
+  }, RECORD_POLL_MS);
 }
 
 function syncPanelVisibility() {
@@ -639,7 +652,10 @@ function syncPanelVisibility() {
     resetTransitionState();
     window.requestAnimationFrame(() => recordSection?.scrollIntoView({ block: "start" }));
     loadRecord();
+    scheduleRecordPolling();
   }
+
+  if (!recordVisible) stopRecordPolling();
 }
 
 entryButton.addEventListener("click", startSequence);
@@ -650,15 +666,23 @@ thoughtInput.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeThought(false);
 });
 recordRefresh?.addEventListener("click", () => loadRecord({ manual: true }));
-recordTokenForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const token = recordTokenInput.value.trim();
-  if (token) localStorage.setItem(READ_TOKEN_KEY, token);
-  loadRecord({ manual: true });
-});
 document.addEventListener("pointerdown", noteInteraction, { passive: true });
 document.addEventListener("keydown", noteInteraction);
 window.addEventListener("hashchange", syncPanelVisibility);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopRecordPolling();
+  } else if (recordSection?.classList.contains("is-visible")) {
+    loadRecord({ silent: true });
+    scheduleRecordPolling();
+  }
+});
+window.addEventListener("focus", () => {
+  if (!document.hidden && recordSection?.classList.contains("is-visible")) {
+    loadRecord({ silent: true });
+    scheduleRecordPolling();
+  }
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

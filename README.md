@@ -2,7 +2,7 @@
 
 Sleep is an AO Labs daily sleep-hours log populated from Samsung Health through Health Connect.
 
-The sleep log is the root surface at `/`. It only reads completed sleep sessions that a consented Android bridge sends after wake.
+The sleep log is the root surface at `/`. It auto-refreshes while open and reads completed sleep sessions that a consented Android bridge sends after wake. Viewing the log is public so it works from any device; writing records still requires the bridge ingest token.
 
 Android bridge download: `https://sleep.aolabs.io/downloads/sleep-bridge.apk`
 
@@ -10,7 +10,7 @@ Android bridge download: `https://sleep.aolabs.io/downloads/sleep-bridge.apk`
 
 Samsung Health on the paired phone writes completed Galaxy Watch sleep to Health Connect after the watch data has transferred and processed. The Android bridge in `connectors/health-connect-bridge` requests Health Connect sleep permission, reads `SleepSessionRecord` records, and posts timing plus stage intervals to the Sleep API.
 
-The website itself cannot directly read Samsung Health or the watch. It only reads the Sleep API.
+The website itself cannot directly read Samsung Health or the watch. It only reads the Sleep API and polls the public summary route while the record page is open.
 
 Current API: `https://sleep.aolabs.io`
 
@@ -19,7 +19,6 @@ Current API: `https://sleep.aolabs.io`
 ```powershell
 npm install
 $env:SLEEP_INGEST_TOKEN = "local-ingest-token"
-$env:SLEEP_READ_TOKEN = "local-read-token"
 npm run dev
 ```
 
@@ -53,14 +52,18 @@ Authorization: `Bearer $SLEEP_INGEST_TOKEN`
 
 `GET /api/sleep/summary`
 
-Authorization: `Bearer $SLEEP_READ_TOKEN` when the read token is configured.
+Public. Used by the website on any device.
+
+`GET /api/sleep/export`
+
+Authorization: `Bearer $SLEEP_READ_TOKEN` when raw export access is needed.
 
 ## Railway
 
 Set these variables on the Railway service:
 
 - `SLEEP_INGEST_TOKEN`
-- `SLEEP_READ_TOKEN`
+- `SLEEP_READ_TOKEN` only for raw export access; the website summary is public.
 - `SLEEP_ALLOWED_ORIGINS=https://sleep.aolabs.io,https://aolabs.io,https://sleep-web-production.up.railway.app`
 - `DATABASE_URL` from a Railway Postgres service, or `DATA_DIR=/data` with a persistent volume
 

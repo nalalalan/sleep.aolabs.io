@@ -889,7 +889,6 @@ main:has(.paper-section:target) .record-section {
   font-size: 16px;
 }
 
-.record-token,
 .record-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -897,34 +896,10 @@ main:has(.paper-section:target) .record-section {
   gap: 10px;
 }
 
-.record-token {
-  margin: 18px 0;
-}
-
-.record-token[hidden] {
-  display: none;
-}
-
 .bridge-install[hidden] {
   display: none;
 }
 
-.record-token input {
-  width: min(360px, 100%);
-  min-height: 42px;
-  border: 1px solid rgba(255, 228, 199, .18);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, .28);
-  color: #ffeeda;
-  padding: 0 12px;
-  outline: none;
-}
-
-.record-token input:focus {
-  border-color: rgba(236, 176, 124, .6);
-}
-
-.record-token button,
 .record-toolbar button,
 .record-secondary,
 .bridge-download {
@@ -937,7 +912,6 @@ main:has(.paper-section:target) .record-section {
   cursor: pointer;
 }
 
-.record-token button:hover,
 .record-toolbar button:hover,
 .record-secondary:hover,
 .bridge-download:hover {
@@ -1673,16 +1647,6 @@ figcaption {
     padding: 76px 14px 64px;
   }
 
-  .record-token {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  .record-token input,
-  .record-token button {
-    width: 100%;
-  }
-
   .record-toolbar {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1852,21 +1816,6 @@ figcaption {
   color: rgba(225, 243, 238, .70);
 }
 
-.is-reading-record .record-token {
-  margin: 0 0 14px;
-}
-
-.is-reading-record .record-token input {
-  border-color: rgba(219, 246, 239, .22);
-  background: rgba(246, 252, 249, .92);
-  color: #132025;
-}
-
-.is-reading-record .record-token input:focus {
-  border-color: rgba(161, 218, 226, .78);
-}
-
-.is-reading-record .record-token button,
 .is-reading-record .record-toolbar button,
 .is-reading-record .bridge-download {
   border-color: rgba(238, 248, 244, .34);
@@ -1878,7 +1827,6 @@ figcaption {
   box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
 }
 
-.is-reading-record .record-token button:hover,
 .is-reading-record .record-toolbar button:hover,
 .is-reading-record .bridge-download:hover {
   background: #f8fffb;
@@ -2091,7 +2039,6 @@ figcaption {
     padding-right: 0;
   }
 
-  .is-reading-record .record-token,
   .is-reading-record .record-toolbar,
   .is-reading-record .bridge-install {
     display: grid;
@@ -2105,8 +2052,6 @@ figcaption {
     text-align: left;
   }
 
-  .is-reading-record .record-token input,
-  .is-reading-record .record-token button,
   .is-reading-record .record-toolbar button,
   .is-reading-record .bridge-download {
     width: 100%;
@@ -2127,7 +2072,6 @@ figcaption {
   }
 }
 
-.is-reading-record .record-token[hidden],
 .is-reading-record .bridge-install[hidden] {
   display: none;
 }
@@ -2176,7 +2120,6 @@ figcaption {
   color: rgba(24, 35, 34, .66);
 }
 
-.is-reading-record .record-token button,
 .is-reading-record .record-toolbar button,
 .is-reading-record .bridge-download {
   min-height: 40px;
@@ -2189,7 +2132,6 @@ figcaption {
     inset 0 1px 0 rgba(255, 255, 255, .72);
 }
 
-.is-reading-record .record-token button:hover,
 .is-reading-record .record-toolbar button:hover,
 .is-reading-record .bridge-download:hover {
   background: #fffdf5;
