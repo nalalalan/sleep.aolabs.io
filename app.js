@@ -341,6 +341,13 @@ function formatNightDate(value) {
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+function localDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function formatDateTime(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
@@ -393,6 +400,20 @@ function recordSignature(data) {
     lastCapturedAt: data.lastCapturedAt || "",
     nights
   });
+}
+
+function currentSyncGap(data) {
+  const nights = [...(data.nights || [])]
+    .filter(isDisplayedNight)
+    .sort((a, b) => b.sleepDate.localeCompare(a.sleepDate));
+  const latest = nights[0];
+  if (!latest) return "";
+
+  const latestDate = formatNightDate(latest.sleepDate);
+  const todayKey = localDateKey();
+  const missingToday = latest.sleepDate < todayKey ? `No ${formatNightDate(todayKey)} upload yet. ` : "";
+  const bridgeTime = data.lastCapturedAt ? `Phone bridge last sent ${formatDateTime(data.lastCapturedAt)}.` : "No phone bridge upload time available.";
+  return `${missingToday}Latest uploaded night is ${latestDate}. ${bridgeTime}`;
 }
 
 function setRefreshState(label, busy = false, reset = false) {
@@ -595,7 +616,7 @@ async function loadRecord(options = {}) {
     }
 
     if (bridgeInstall) bridgeInstall.hidden = true;
-    recordState.textContent = "May 2026 onward.";
+    recordState.textContent = currentSyncGap(data) || "May 2026 onward.";
     if (manual || (silent && changed)) {
       const checkedAt = formatTime(new Date().toISOString());
       const sourceTime = data.lastCapturedAt ? `Last bridge sync ${formatDateTime(data.lastCapturedAt)}.` : `Generated ${formatDateTime(data.generatedAt)}.`;

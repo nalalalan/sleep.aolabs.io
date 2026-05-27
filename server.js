@@ -473,6 +473,14 @@ app.post("/api/ingest/sleep-sessions", requireConfiguredToken("SLEEP_INGEST_TOKE
   try {
     const sessions = sanitizePayload(req.body);
     await storeSessions(sessions);
+    const latest = [...sessions].sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime())[0];
+    console.info(JSON.stringify({
+      event: "sleep_ingest_accepted",
+      accepted: sessions.length,
+      latestSleepDate: latest?.sleepDate || null,
+      latestEndTime: latest?.endTime || null,
+      capturedAt: latest?.capturedAt || null
+    }));
     res.json({
       ok: true,
       accepted: sessions.length,
