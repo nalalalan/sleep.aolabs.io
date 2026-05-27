@@ -6,7 +6,7 @@ Download the current debug APK from `https://sleep.aolabs.io/downloads/sleep-bri
 
 ## What it does
 
-- Requests Health Connect `READ_SLEEP`.
+- Requests Health Connect `READ_SLEEP` and background read access.
 - Reads completed `SleepSessionRecord` data after wake.
 - Posts session timing, source package, and stage intervals to the Sleep API.
 - Stores only the endpoint and bridge token locally on the phone.
