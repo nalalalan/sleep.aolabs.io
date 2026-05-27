@@ -486,6 +486,14 @@ function renderRecordLog(data) {
     sleepEndY: yForClock(clockAxisMinutes(night.endTime, night.sleepDate) || 0)
   }));
   const linePoints = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
+  const trendArea = points.length
+    ? [
+      `M ${points[0].x.toFixed(1)} ${yFor(0).toFixed(1)}`,
+      ...points.map((point) => `L ${point.x.toFixed(1)} ${point.y.toFixed(1)}`),
+      `L ${points[points.length - 1].x.toFixed(1)} ${yFor(0).toFixed(1)}`,
+      "Z"
+    ].join(" ")
+    : "";
   const gridValues = Array.from(new Set([0, Math.ceil(maxHours / 2), maxHours]));
   const grid = gridValues.map((hour) => {
     const y = yFor(hour * 60);
@@ -533,9 +541,13 @@ function renderRecordLog(data) {
     `;
   }).join("");
 
-  const entries = nights.slice(0, 10).map((night) => {
+  const entries = nights.slice(0, 3).map((night) => {
     const stages = night.stageMinutes || {};
     const asleep = stageTotal(stages, ["deep", "rem", "light", "sleeping", "unknown"]);
+    const awake = stageTotal(stages, ["awake", "outOfBed"]);
+    const light = stageTotal(stages, ["light", "sleeping", "unknown"]);
+    const totalForBar = Math.max(1, awake + light + (stages.deep || 0) + (stages.rem || 0));
+    const stageWidth = (minutes) => `${Math.max(2, (minutes / totalForBar) * 100).toFixed(2)}%`;
     return `
       <article class="latest-entry">
         <div class="latest-entry-main">
@@ -543,9 +555,15 @@ function renderRecordLog(data) {
           <span>${formatTime(night.startTime)} to ${formatTime(night.endTime)}</span>
         </div>
         <b class="latest-entry-duration">${formatMinutes(night.durationMinutes)}</b>
+        <div class="entry-stage-bar" aria-hidden="true">
+          <span class="stage-bar-awake" style="width:${stageWidth(awake)}"></span>
+          <span class="stage-bar-light" style="width:${stageWidth(light)}"></span>
+          <span class="stage-bar-deep" style="width:${stageWidth(stages.deep || 0)}"></span>
+          <span class="stage-bar-rem" style="width:${stageWidth(stages.rem || 0)}"></span>
+        </div>
         <div class="entry-stages" aria-label="sleep stages">
           <span>asleep ${formatMinutes(asleep)}</span>
-          <span>awake ${formatMinutes(stageTotal(stages, ["awake", "outOfBed"]))}</span>
+          <span>awake ${formatMinutes(awake)}</span>
           <span>deep ${formatMinutes(stages.deep || 0)}</span>
           <span>rem ${formatMinutes(stages.rem || 0)}</span>
         </div>
@@ -564,6 +582,7 @@ function renderRecordLog(data) {
         <line class="clock-axis-line" x1="${clockAxisX}" y1="${pad.top}" x2="${clockAxisX}" y2="${pad.top + plotHeight}"></line>
         ${clockAxis}
         ${sleepWindows}
+        ${trendArea ? `<path class="trend-area" d="${trendArea}"></path>` : ""}
         ${linePoints ? `<polyline class="trend-line" points="${linePoints}"></polyline>` : ""}
         ${markers}
       </svg>

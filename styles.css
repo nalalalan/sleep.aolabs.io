@@ -2641,3 +2641,390 @@ body.is-reading-record {
     transition-duration: .001ms !important;
   }
 }
+
+/* Final record polish pass: one quiet instrument surface over the supplied photo. */
+.is-reading-record {
+  background:
+    linear-gradient(90deg, rgba(7, 14, 14, .66), rgba(8, 13, 13, .16) 46%, rgba(6, 10, 11, .58)),
+    linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(5, 8, 9, .36)),
+    url("./assets/sleep-background.jpg") center center / cover fixed no-repeat,
+    #111816;
+}
+
+.is-reading-record .record-section {
+  justify-content: center;
+  padding: clamp(14px, 2.5vh, 22px) clamp(14px, 3.6vw, 52px);
+}
+
+.is-reading-record .record-shell {
+  width: min(1280px, calc(100vw - 28px));
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, .58);
+  background:
+    linear-gradient(145deg, rgba(249, 247, 236, .94), rgba(232, 239, 232, .88) 62%, rgba(222, 233, 225, .86)),
+    rgba(242, 242, 230, .9);
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, .34),
+    0 1px 0 rgba(255, 255, 255, .72) inset,
+    0 0 0 1px rgba(26, 40, 36, .08) inset;
+  color: #10211f;
+}
+
+.is-reading-record .record-head {
+  display: grid;
+  gap: 4px;
+  margin-bottom: clamp(12px, 1.8vh, 18px);
+  padding: 0 242px clamp(10px, 1.5vh, 14px) 0;
+  border-bottom: 1px solid rgba(30, 42, 38, .16);
+}
+
+.is-reading-record .record-head h1 {
+  color: #10211f;
+  font-size: clamp(34px, 4.2vh, 48px);
+  line-height: .94;
+  letter-spacing: 0;
+}
+
+.is-reading-record .record-head p,
+.is-reading-record .record-toolbar,
+.is-reading-record .record-boundary p,
+.is-reading-record .record-note,
+.is-reading-record .record-meta {
+  color: rgba(16, 33, 31, .68);
+}
+
+.is-reading-record .record-suite-links {
+  top: clamp(18px, 2.3vw, 26px);
+  right: clamp(118px, 10vw, 132px);
+  gap: 0;
+  padding: 4px;
+  border: 1px solid rgba(27, 47, 43, .12);
+  border-radius: 8px;
+  background: rgba(255, 253, 244, .52);
+  box-shadow:
+    0 14px 34px rgba(26, 36, 32, .10),
+    0 1px 0 rgba(255, 255, 255, .72) inset;
+  backdrop-filter: blur(14px) saturate(1.08);
+}
+
+.is-reading-record .record-suite-links a {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.is-reading-record .record-suite-links a + a {
+  margin-left: 2px;
+}
+
+.is-reading-record .record-suite-links a:hover {
+  background: rgba(19, 39, 37, .08);
+}
+
+.is-reading-record .record-toolbar {
+  top: clamp(18px, 2.3vw, 26px);
+  right: clamp(18px, 2.3vw, 26px);
+  gap: 7px;
+}
+
+.is-reading-record .record-toolbar button {
+  min-height: 38px;
+  padding: 0 18px;
+  border: 1px solid rgba(22, 42, 38, .16);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fffdf4, #e7eee8);
+  color: #10211f;
+  box-shadow:
+    0 12px 28px rgba(27, 40, 36, .12),
+    0 1px 0 rgba(255, 255, 255, .86) inset;
+}
+
+.is-reading-record .record-content {
+  grid-template-columns: minmax(0, 1.4fr) minmax(330px, .76fr);
+  gap: clamp(22px, 2.6vw, 36px);
+}
+
+.is-reading-record .record-trend {
+  padding-right: clamp(22px, 2.6vw, 34px);
+  border-right: 1px solid rgba(30, 42, 38, .14);
+}
+
+.is-reading-record .record-section-head {
+  align-items: baseline;
+  margin-bottom: clamp(8px, 1.3vh, 12px);
+}
+
+.is-reading-record .record-chart h2,
+.is-reading-record .record-list h2 {
+  color: #10211f;
+  font-size: clamp(16px, 1.95vh, 19px);
+  font-weight: 760;
+}
+
+.is-reading-record .record-section-head > span {
+  color: rgba(16, 33, 31, .50);
+  font-size: clamp(12px, 1.45vh, 14px);
+}
+
+.is-reading-record .trend-area {
+  fill: rgba(40, 86, 91, .075);
+}
+
+.is-reading-record .trend-line {
+  stroke: #143f47;
+  stroke-width: 5.2;
+}
+
+.is-reading-record .trend-point circle {
+  fill: #fbf8ee;
+  stroke: #143f47;
+  stroke-width: 3.2;
+}
+
+.is-reading-record .trend-gridline line {
+  stroke: rgba(20, 32, 30, .11);
+}
+
+.is-reading-record .trend-gridline text,
+.is-reading-record .clock-axis-tick text,
+.is-reading-record .trend-label {
+  fill: rgba(16, 33, 31, .54);
+  font-weight: 650;
+}
+
+.is-reading-record .clock-axis-line {
+  stroke: rgba(20, 32, 30, .16);
+}
+
+.is-reading-record .clock-axis-tick line {
+  stroke: rgba(20, 32, 30, .20);
+}
+
+.is-reading-record .sleep-window-range line {
+  stroke: rgba(67, 111, 124, .30);
+  stroke-width: 3.6;
+}
+
+.is-reading-record .sleep-window-range circle {
+  fill: #fbf8ee;
+  stroke: rgba(67, 111, 124, .50);
+  stroke-width: 1.8;
+}
+
+.is-reading-record .trend-value {
+  fill: #10211f;
+  font-size: 18px;
+  font-weight: 780;
+}
+
+.is-reading-record .latest-entry-list {
+  gap: 0;
+}
+
+.is-reading-record .latest-entry {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px 18px;
+  align-content: center;
+  padding: clamp(12px, 2vh, 18px) 0;
+}
+
+.is-reading-record .latest-entry:first-child {
+  padding-top: 0;
+}
+
+.is-reading-record .latest-entry-main {
+  gap: 3px;
+}
+
+.is-reading-record .latest-entry-main strong,
+.is-reading-record .latest-entry-duration {
+  color: #10211f;
+}
+
+.is-reading-record .latest-entry-main strong {
+  font-size: clamp(17px, 2vh, 20px);
+  font-weight: 780;
+}
+
+.is-reading-record .latest-entry-main span,
+.is-reading-record .entry-stages span {
+  color: rgba(16, 33, 31, .62);
+}
+
+.is-reading-record .latest-entry-duration {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-size: clamp(36px, 5.6vh, 54px);
+  line-height: .88;
+  letter-spacing: 0;
+}
+
+.is-reading-record .entry-stage-bar {
+  grid-column: 1;
+  display: flex;
+  align-self: center;
+  width: min(220px, 100%);
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(24, 35, 32, .08);
+}
+
+.is-reading-record .entry-stage-bar span {
+  display: block;
+  min-width: 2px;
+}
+
+.is-reading-record .stage-bar-awake {
+  background: rgba(245, 248, 240, .96);
+}
+
+.is-reading-record .stage-bar-light {
+  background: #b7d8df;
+}
+
+.is-reading-record .stage-bar-deep {
+  background: #547f94;
+}
+
+.is-reading-record .stage-bar-rem {
+  background: #c2cf7c;
+}
+
+.is-reading-record .entry-stages {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 12px;
+}
+
+.is-reading-record .entry-stages span {
+  font-size: clamp(11px, 1.45vh, 13px);
+}
+
+.is-reading-record .entry-stages span::before {
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-width: 2px;
+}
+
+@media (max-width: 760px) {
+  .is-reading-record {
+    background:
+      linear-gradient(90deg, rgba(7, 14, 14, .60), rgba(8, 13, 13, .12) 48%, rgba(6, 10, 11, .48)),
+      url("./assets/sleep-background.jpg") center center / cover fixed no-repeat,
+      #111816;
+  }
+
+  .is-reading-record .record-section {
+    padding: 10px;
+  }
+
+  .is-reading-record .record-shell {
+    width: calc(100vw - 20px) !important;
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  .is-reading-record .record-head {
+    min-height: 0;
+    margin-bottom: 8px;
+    padding: 0 116px 8px 0;
+  }
+
+  .is-reading-record .record-head h1 {
+    font-size: clamp(29px, 4.5vh, 34px);
+    line-height: .92;
+  }
+
+  .is-reading-record .record-head p {
+    font-size: clamp(12px, 1.8vh, 14px);
+    line-height: 1.35;
+  }
+
+  .is-reading-record .record-suite-links {
+    top: 14px;
+    right: 14px;
+    padding: 3px;
+  }
+
+  .is-reading-record .record-suite-links a {
+    width: 29px;
+    height: 29px;
+  }
+
+  .is-reading-record .record-toolbar {
+    margin-bottom: 8px;
+  }
+
+  .is-reading-record .record-toolbar button {
+    min-height: 32px;
+    padding: 0 13px;
+    border-radius: 7px;
+  }
+
+  .is-reading-record .record-toolbar span {
+    max-width: 56%;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+
+  .is-reading-record .record-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, .6fr) minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .is-reading-record .record-trend {
+    padding: 0 0 8px;
+  }
+
+  .is-reading-record .record-section-head {
+    margin-bottom: 4px;
+  }
+
+  .is-reading-record .record-chart h2,
+  .is-reading-record .record-list h2 {
+    font-size: 16px;
+  }
+
+  .is-reading-record .sleep-trend-plot {
+    min-height: 0;
+  }
+
+  .is-reading-record .latest-entry {
+    gap: 3px 10px;
+    padding: 5px 0;
+  }
+
+  .is-reading-record .latest-entry-main strong {
+    font-size: 14px;
+  }
+
+  .is-reading-record .latest-entry-main span {
+    font-size: 11px;
+  }
+
+  .is-reading-record .latest-entry-duration {
+    font-size: clamp(26px, 4.8vh, 36px);
+  }
+
+  .is-reading-record .entry-stage-bar {
+    width: min(178px, 100%);
+    height: 4px;
+  }
+
+  .is-reading-record .entry-stages {
+    gap: 2px 8px;
+  }
+
+  .is-reading-record .entry-stages span {
+    font-size: 9.5px;
+    line-height: 1.18;
+  }
+}

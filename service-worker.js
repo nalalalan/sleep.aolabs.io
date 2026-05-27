@@ -1,4 +1,4 @@
-const CACHE_NAME = "sleep-aolabs-20260526-clock-axis-auto-v1";
+const CACHE_NAME = "sleep-aolabs-20260527-record-polish-v1";
 
 const APP_SHELL = [
   "./",
