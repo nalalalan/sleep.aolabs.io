@@ -1,4 +1,4 @@
-const CACHE_NAME = "sleep-aolabs-20260627-bridge-resync-v3";
+const CACHE_NAME = "sleep-aolabs-20260627-bridge-resync-v4";
 
 const APP_SHELL = [
   "./",

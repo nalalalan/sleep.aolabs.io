@@ -33,7 +33,7 @@
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="preload" as="image" href="./assets/sleep-background.jpg">
-  <link rel="stylesheet" href="./styles.css?v=20260627-bridge-resync-v3">
+  <link rel="stylesheet" href="./styles.css?v=20260627-bridge-resync-v4">
 </head>
 <body class="is-reading-record">
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -209,7 +209,7 @@
         <section>
           <h2>Health Connect Data Path</h2>
           <p>Galaxy Watch sleep is processed by Samsung Health on the paired phone after wake. When Samsung Health synchronization with Health Connect is enabled, a private Android bridge with read permission for sleep sessions can read completed Health Connect records and send session timing and stage intervals to the Sleep API.</p>
-          <p>The website does not receive raw phone or watch access. The public record reads the Sleep API without a viewing token so the log is visible across devices; ingestion still requires a separate bridge token. When Samsung Health contains a newer night that has not reached the API, the record states the latest uploaded night and the last bridge-send time instead of presenting refresh as the failure. The record is a longitudinal outcome surface, not a diagnosis, treatment claim, or medical device.</p>
+          <p>The website does not receive raw phone or watch access. The public record reads the Sleep API without a viewing token so the log is visible across devices; ingestion still requires a separate bridge token. When Samsung Health contains a newer night that has not reached the API, the record states the latest uploaded night and the last bridge-send time instead of presenting refresh as the failure. The Android bridge schedules periodic Health Connect reads, reschedules after phone boot or app update, and uses a 35-day background lookback; a bridge install/reschedule action appears when the uploaded record is two or more days stale. The record is a longitudinal outcome surface, not a diagnosis, treatment claim, or medical device.</p>
         </section>
 
         <section>
@@ -251,6 +251,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260627-bridge-resync-v3" defer></script>
+  <script src="./app.js?v=20260627-bridge-resync-v4" defer></script>
 </body>
 </html>
