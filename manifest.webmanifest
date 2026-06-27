@@ -1,14 +1,14 @@
 {
-  "name": "Sleep",
-  "short_name": "Sleep",
-  "description": "A low-stimulation digital transition object from AO Labs.",
+  "name": "sleep moved to blood",
+  "short_name": "sleep",
+  "description": "Sleep metrics now appear inside Blood.",
   "id": "https://sleep.aolabs.io/",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#090605",
-  "theme_color": "#120b08",
+  "background_color": "#f7f4ee",
+  "theme_color": "#f7f4ee",
   "categories": ["health", "lifestyle"],
   "icons": [
     {

@@ -1,8 +1,8 @@
 # sleep.aolabs.io
 
-Sleep is an AO Labs daily sleep-hours log populated from Samsung Health through Health Connect.
+Sleep is an AO Labs sleep-hours API populated from Samsung Health through Health Connect.
 
-The sleep log is the root surface at `/`. It auto-refreshes while open and reads completed sleep sessions that a consented Android bridge sends after wake. Viewing the log is public so it works from any device; writing records still requires the bridge ingest token.
+The standalone Sleep website is hidden. The root route redirects to `https://blood.aolabs.io/`, where sleep appears with glucose, HR, HRV, recent steps, and the personal anxiety estimate. Keep the Sleep API and downloads available for old bridge installs and Blood's sleep fallback. Writing records still requires the bridge ingest token.
 
 Android bridge download: `https://sleep.aolabs.io/downloads/sleep-bridge.apk`
 

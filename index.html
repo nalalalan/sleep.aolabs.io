@@ -2,255 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>sleep.aolabs.io</title>
-  <meta name="description" content="Sleep logs nightly sleep hours from Samsung Health through Health Connect.">
-  <link rel="canonical" href="https://sleep.aolabs.io/">
-  <meta name="theme-color" content="#151815">
-  <meta name="color-scheme" content="light">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="AO Labs">
-  <meta property="og:title" content="sleep">
-  <meta property="og:description" content="A private daily sleep-hours log from Samsung Health.">
-  <meta property="og:url" content="https://sleep.aolabs.io/">
-  <meta property="og:image" content="https://aolabs.io/previews/sleep-20260612.png">
-  <meta property="og:image:secure_url" content="https://aolabs.io/previews/sleep-20260612.png">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="sleep preview card.">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="sleep">
-  <meta name="twitter:description" content="A private daily sleep-hours log from Samsung Health.">
-  <meta name="twitter:image" content="https://aolabs.io/previews/sleep-20260612.png">
-  <meta name="twitter:image:alt" content="sleep preview card.">
-  <script>
-    if (location.hostname === "sleep.aolabs.io" && location.protocol === "http:") {
-      location.replace(`https://aolabs.io/sleep/${location.search}${location.hash}`);
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>sleep moved to blood</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Sleep metrics now appear inside Blood.">
+  <link rel="canonical" href="https://blood.aolabs.io/">
+  <meta http-equiv="refresh" content="0; url=https://blood.aolabs.io/">
+  <meta name="theme-color" content="#f7f4ee">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f4ee;
+      --ink: #221e1d;
+      --muted: #756967;
+      --line: rgba(73, 55, 51, .16);
+      --blood: #9f3041;
     }
-  </script>
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="preload" as="image" href="./assets/sleep-background.jpg">
-  <link rel="stylesheet" href="./styles.css?v=20260627-bridge-resync-v4">
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    main {
+      width: min(480px, 100%);
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf8;
+    }
+
+    h1,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.05;
+    }
+
+    p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      margin-top: 16px;
+      padding: 9px 13px;
+      border-radius: 8px;
+      background: var(--blood);
+      color: #fffaf2;
+      font-weight: 760;
+      text-decoration: none;
+    }
+  </style>
 </head>
-<body class="is-reading-record">
-  <header class="suite-topbar" aria-label="sleep navigation">
-    <div class="suite-brand-cluster">
-      <a class="suite-ao-home" href="https://aolabs.io/" aria-label="aolabs.io">
-        <img src="./marks/ao-ink.svg" alt="">
-      </a>
-      <a class="suite-app-brand" href="./" aria-label="sleep home">
-        <img class="suite-app-mark" src="./icon.svg" alt="">
-        <span class="suite-app-name">sleep</span>
-      </a>
-    </div>
-    <nav class="suite-topbar-actions" aria-label="sleep navigation">
-      <a href="./" aria-label="sleep record"><span class="record-icon" aria-hidden="true"></span></a>
-      <a href="./downloads/sleep-bridge.apk" download aria-label="download Android bridge"><span class="bridge-icon" aria-hidden="true"></span></a>
-      <a href="#paper" aria-label="paper"><span class="paper-icon" aria-hidden="true"></span></a>
-    </nav>
-  </header>
-
+<body>
   <main>
-    <section class="sleep-experience" id="transition" aria-label="Sleep transition">
-      <div class="sleep-stage" aria-hidden="true">
-        <canvas class="ambient-canvas" id="ambient-canvas"></canvas>
-        <div class="field field-a"></div>
-        <div class="field field-b"></div>
-        <div class="field field-c"></div>
-        <div class="grain"></div>
-        <div class="shade"></div>
-      </div>
-
-      <div class="sleep-ui">
-        <div class="sleep-focus" aria-hidden="true">
-          <span class="focus-haze"></span>
-          <span class="focus-lid"></span>
-          <span class="sleep-z sleep-z-a">z</span>
-          <span class="sleep-z sleep-z-b">z</span>
-          <span class="sleep-z sleep-z-c">z</span>
-        </div>
-
-        <button class="entry-button" id="entry-button" type="button" aria-label="soften">
-          <span class="entry-symbol" aria-hidden="true"><span></span></span>
-        </button>
-
-        <div class="quiet-controls" aria-label="quiet controls">
-          <button class="icon-button" id="audio-button" type="button" aria-label="sound">
-            <svg viewBox="0 0 48 48" aria-hidden="true">
-              <path d="M10 28h7l9 8V12l-9 8h-7z"></path>
-              <path class="wave wave-a" d="M31 19c3 3 3 7 0 10"></path>
-              <path class="wave wave-b" d="M35 14c6 6 6 14 0 20"></path>
-            </svg>
-          </button>
-
-          <div class="thought-shell" id="thought-shell">
-            <button class="thought-button" id="thought-button" type="button" aria-label="open thought well">
-              <span aria-hidden="true"></span>
-            </button>
-            <textarea id="thought-input" rows="2" maxlength="180" autocomplete="off" spellcheck="false" aria-label="tomorrow thought"></textarea>
-          </div>
-        </div>
-
-        <div class="home-bridge-callout" aria-label="Android bridge install">
-          <div>
-            <strong>Android bridge</strong>
-            <span>Samsung Health -> Health Connect -> Sleep.</span>
-          </div>
-          <a href="./downloads/sleep-bridge.apk" download>Download APK</a>
-          <a href="./">Sleep record</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="record-section" id="record" aria-labelledby="record-title">
-      <div class="record-shell">
-        <div class="record-head">
-          <h1 id="record-title">Sleep log</h1>
-          <p id="record-state">Samsung Health sleep sessions sync here after the Android bridge runs.</p>
-        </div>
-
-        <nav class="record-suite-links" aria-label="AO Labs navigation">
-          <a href="https://aolabs.io/" aria-label="aolabs.io">
-            <img src="./marks/ao-ink.svg" alt="">
-          </a>
-          <a href="./downloads/sleep-bridge.apk" download aria-label="download Android bridge">
-            <span class="bridge-icon" aria-hidden="true"></span>
-          </a>
-          <a href="#paper" aria-label="paper">
-            <span class="paper-icon" aria-hidden="true"></span>
-          </a>
-        </nav>
-
-        <div class="record-toolbar">
-          <button id="record-refresh" type="button">Refresh</button>
-          <span id="record-updated">No records loaded.</span>
-        </div>
-
-        <div class="bridge-install" id="bridge-install" hidden>
-          <div class="bridge-install-copy">
-            <h2>Android bridge</h2>
-            <p>Install current APK, grant background sleep access, then reschedule auto sync.</p>
-          </div>
-          <a class="bridge-download" href="./downloads/sleep-bridge.apk" download>Download bridge APK</a>
-          <div class="bridge-steps" aria-label="bridge setup">
-            <span>Install on Android phone</span>
-            <span>Grant background sleep access</span>
-            <span>Tap Reschedule auto sync</span>
-            <span>Sync last 60 days</span>
-          </div>
-        </div>
-
-        <div class="record-content" id="record-content" data-state="loading">
-          <div class="record-boundary">
-            <strong>Health Connect permission needed.</strong>
-            <p>Samsung Health writes completed Galaxy Watch sleep after wake. The Android bridge sends completed sessions here.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="paper-section" id="paper" aria-labelledby="paper-title">
-      <article class="paper">
-        <p class="paper-kicker">design research scaffold</p>
-        <h1 id="paper-title">Sleep: a low-stimulation digital transition object with consented wearable outcome capture</h1>
-        <p class="paper-meta">AO Labs, 2026. This section documents the mechanism, Health Connect data path, and study plan; the public record surface shows the latest synced sleep outcomes while the transition surface intentionally avoids coaching language.</p>
-
-        <section>
-          <h2>Abstract</h2>
-          <p>Sleep is a single-page progressive web application designed for the realistic bedtime condition in which phone removal is not a reliable first move. Instead of delivering sleep hygiene advice, meditation prompts, streaks, or self-improvement feedback, the interface behaves as a gradually disappearing transition object: it gives the user one soft focal object to watch, then progressively lowers light, contrast, movement, novelty, interaction, and reward density over a 13-minute sequence.</p>
-          <p>The design translates established sleep-psychology principles into environmental behavior rather than visible instruction. Its hidden mechanism combines stimulus-control logic, cognitive arousal reduction, future-thought offloading, slow respiratory pacing, circadian light minimization, sensory regulation, and progressive extinction of interaction rewards. The central hypothesis is that a phone surface can be made less reinforcing without becoming so boring that it provokes boredom-anxiety in users who seek stimulation at night.</p>
-        </section>
-
-        <section class="significance">
-          <h2>Significance Statement</h2>
-          <p>Most digital bedtime advice assumes the user can simply stop using the device. Sleep tests a narrower and more pragmatic design claim: for users who cannot reliably begin with no-phone behavior, a digital surface can still reduce pre-sleep arousal if it stops competing for attention and becomes an increasingly low-information sensory cue.</p>
-        </section>
-
-        <section>
-          <h2>Mechanism</h2>
-          <figure class="mechanism-figure">
-            <figcaption>Figure 1. Proposed mechanism diagram. The live app does not expose these labels.</figcaption>
-            <div class="mechanism-grid" aria-label="Proposed mechanism diagram">
-              <div><strong>cue</strong><span>same entry, same sensory field</span></div>
-              <div><strong>offload</strong><span>one small future thought capture</span></div>
-              <div><strong>pace</strong><span>slow visual respiration and low-frequency sound</span></div>
-              <div><strong>dim</strong><span>lower luminance, contrast, and spectral intensity</span></div>
-              <div><strong>extinguish</strong><span>fewer controls, less novelty, weaker rewards</span></div>
-              <div><strong>release</strong><span>near-black final state with minimal interaction</span></div>
-            </div>
-          </figure>
-          <figure class="placeholder-figure">
-            <figcaption>Figure 2. Planned study figure placeholder: nightly timeline, phone-touch cessation, sleep-onset latency, and pre-sleep arousal change under Sleep versus usual phone use.</figcaption>
-          </figure>
-        </section>
-
-        <section>
-          <h2>Design Principles</h2>
-          <ol class="principles">
-            <li><strong>No coaching surface.</strong> The transition experience contains no sleep instructions, moralizing, affirmations, dashboards, streaks, or progress feedback.</li>
-            <li><strong>Enough sensory input to avoid threat-level boredom.</strong> The visual field starts warm, tactile, and slowly moving, then removes novelty gradually rather than abruptly.</li>
-            <li><strong>Drowsy focal path.</strong> The sleep surface gives one slow, dim focal object that can be watched without reading, choosing, or tracking performance.</li>
-            <li><strong>Interaction decay.</strong> Controls begin available, then shrink and fade so the app stops rewarding continued manipulation while preserving the soft focal path.</li>
-            <li><strong>Light discipline.</strong> The palette stays dark and warm, and the sequence trends toward near-black rather than blue-white alerting light.</li>
-            <li><strong>Single offload point.</strong> A tiny thought well permits future-oriented cognitive offloading without creating a journal, task manager, feed, or review loop.</li>
-            <li><strong>Non-clinical identity.</strong> The artifact is a comforting object, not a therapist, coach, tracker, or wellness brand.</li>
-          </ol>
-        </section>
-
-        <section>
-          <h2>Experimental Protocol Proposal</h2>
-          <p>A first evaluation should use a two-week within-subject alternating-night design. Participants would compare Sleep against their usual phone behavior during the final 20 minutes before intended sleep. The transition surface remains non-coaching; the consented record can receive completed sleep sessions after wake through Health Connect.</p>
-          <p>Primary comparison nights should be balanced by weekday, caffeine/alcohol status, and intended bedtime. A follow-up n-of-1 protocol could test whether the same user shows earlier phone-touch cessation, lower pre-sleep arousal ratings, shorter subjective sleep-onset latency, and changed wearable-derived sleep duration after Sleep nights.</p>
-        </section>
-
-        <section>
-          <h2>Health Connect Data Path</h2>
-          <p>Galaxy Watch sleep is processed by Samsung Health on the paired phone after wake. When Samsung Health synchronization with Health Connect is enabled, a private Android bridge with read permission for sleep sessions can read completed Health Connect records and send session timing and stage intervals to the Sleep API.</p>
-          <p>The website does not receive raw phone or watch access. The public record reads the Sleep API without a viewing token so the log is visible across devices; ingestion still requires a separate bridge token. When Samsung Health contains a newer night that has not reached the API, the record states the latest uploaded night and the last bridge-send time instead of presenting refresh as the failure. The Android bridge schedules periodic Health Connect reads, reschedules after phone boot or app update, and uses a 35-day background lookback; a bridge install/reschedule action appears when the uploaded record is two or more days stale. The record is a longitudinal outcome surface, not a diagnosis, treatment claim, or medical device.</p>
-        </section>
-
-        <section>
-          <h2>Outcome Measures</h2>
-          <div class="measure-grid">
-            <div>
-              <h3>Behavioral</h3>
-              <p>Last phone interaction time, interaction count after sequence start, return-to-feed events, sequence completion without active manipulation.</p>
-            </div>
-            <div>
-              <h3>Sleep</h3>
-              <p>Subjective sleep-onset latency, wake after sleep onset, next-morning sleep quality, Health Connect sleep sessions, stage intervals, nightly duration trend, and start/end sleep windows.</p>
-            </div>
-            <div>
-              <h3>Arousal</h3>
-              <p>Pre-Sleep Arousal Scale, rumination/worry rating, sensory comfort rating, boredom-anxiety rating.</p>
-            </div>
-            <div>
-              <h3>Risk</h3>
-              <p>Continued device engagement, irritation, anxiety from darkness, perceived coercion, increased sleep effort, or app checking.</p>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2>Scaffolded References</h2>
-          <ol class="references">
-            <li>Edinger JD, Arnedt JT, Bertisch SM, et al. Behavioral and psychological treatments for chronic insomnia disorder in adults: an American Academy of Sleep Medicine clinical practice guideline. <em>Journal of Clinical Sleep Medicine</em>. 2021;17(2):255-262. <a href="https://doi.org/10.5664/jcsm.8986">doi:10.5664/jcsm.8986</a>.</li>
-            <li>Harvey AG. A cognitive model of insomnia. <em>Behaviour Research and Therapy</em>. 2002;40(8):869-893. <a href="https://doi.org/10.1016/S0005-7967(01)00061-4">doi:10.1016/S0005-7967(01)00061-4</a>.</li>
-            <li>Scullin MK, Krueger ML, Ballard HK, Pruett N, Bliwise DL. The effects of bedtime writing on difficulty falling asleep: a polysomnographic study comparing to-do lists and completed activity lists. <em>Journal of Experimental Psychology: General</em>. 2018;147(1):139-146. <a href="https://doi.org/10.1037/xge0000374">doi:10.1037/xge0000374</a>.</li>
-            <li>Zaccaro A, Piarulli A, Laurino M, Garbella E, Menicucci D, Neri B, Gemignani A. How breath-control can change your life: a systematic review on psycho-physiological correlates of slow breathing. <em>Frontiers in Human Neuroscience</em>. 2018;12:353. <a href="https://doi.org/10.3389/fnhum.2018.00353">doi:10.3389/fnhum.2018.00353</a>.</li>
-            <li>Laborde S, Allen MS, Borges U, et al. Effects of voluntary slow breathing on heart rate and heart rate variability: a systematic review and a meta-analysis. <em>Neuroscience &amp; Biobehavioral Reviews</em>. 2022;138:104711. <a href="https://doi.org/10.1016/j.neubiorev.2022.104711">doi:10.1016/j.neubiorev.2022.104711</a>.</li>
-            <li>Gooley JJ, Chamberlain K, Smith KA, et al. Exposure to room light before bedtime suppresses melatonin onset and shortens melatonin duration in humans. <em>Journal of Clinical Endocrinology &amp; Metabolism</em>. 2011;96(3):E463-E472. <a href="https://doi.org/10.1210/jc.2010-2098">doi:10.1210/jc.2010-2098</a>.</li>
-            <li>Lane SJ, Leao MA. Sleep, sensory integration/processing, and autism: a scoping review. <em>Frontiers in Psychology</em>. 2022;13:877527. <a href="https://doi.org/10.3389/fpsyg.2022.877527">doi:10.3389/fpsyg.2022.877527</a>.</li>
-            <li>Chu Y, Oh Y, Gwon M, et al. Dose-response analysis of smartphone usage and self-reported sleep quality: a systematic review and meta-analysis of observational studies. <em>Journal of Clinical Sleep Medicine</em>. 2023;19(3):621-630. <a href="https://doi.org/10.5664/jcsm.10392">doi:10.5664/jcsm.10392</a>.</li>
-          </ol>
-        </section>
-      </article>
-    </section>
+    <h1>Sleep moved to Blood</h1>
+    <p>Sleep hours now show with glucose, HR, HRV, steps, and the anxiety estimate.</p>
+    <a href="https://blood.aolabs.io/">Open Blood</a>
   </main>
-
-  <script src="./app.js?v=20260627-bridge-resync-v4" defer></script>
 </body>
 </html>

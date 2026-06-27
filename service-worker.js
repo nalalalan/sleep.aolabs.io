@@ -1,18 +1,11 @@
-const CACHE_NAME = "sleep-aolabs-20260627-bridge-resync-v4";
+const CACHE_NAME = "sleep-aolabs-20260627-moved-to-blood-v1";
 
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./assets/sleep-background.jpg",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./marks/ao-ink.svg",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/maskable-512.png",
-  "./icons/apple-touch-icon.png"
+  "./marks/ao-ink.svg"
 ];
 
 self.addEventListener("install", (event) => {
