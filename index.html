@@ -33,7 +33,7 @@
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="preload" as="image" href="./assets/sleep-background.jpg">
-  <link rel="stylesheet" href="./styles.css?v=20260527-record-polish">
+  <link rel="stylesheet" href="./styles.css?v=20260627-bridge-resync-v2">
 </head>
 <body class="is-reading-record">
   <header class="suite-topbar" aria-label="sleep navigation">
@@ -131,22 +131,22 @@
 
         <div class="bridge-install" id="bridge-install" hidden>
           <div class="bridge-install-copy">
-            <h2>Samsung Health sync</h2>
-            <p>Watch sleep -> Health Connect -> log.</p>
+            <h2>Android bridge</h2>
+            <p>Install current APK, grant background sleep access, then reschedule auto sync.</p>
           </div>
-          <a class="bridge-download" href="./downloads/sleep-bridge.apk" download>Download Android bridge</a>
+          <a class="bridge-download" href="./downloads/sleep-bridge.apk" download>Download bridge APK</a>
           <div class="bridge-steps" aria-label="bridge setup">
             <span>Install on Android phone</span>
-            <span>Grant Health Connect sleep</span>
-            <span>Paste bridge token</span>
-            <span>Sync nights</span>
+            <span>Grant background sleep access</span>
+            <span>Tap Reschedule auto sync</span>
+            <span>Sync last 60 days</span>
           </div>
         </div>
 
         <div class="record-content" id="record-content" data-state="loading">
           <div class="record-boundary">
             <strong>Health Connect permission needed.</strong>
-            <p>Samsung Health writes completed Galaxy Watch sleep to Health Connect after wake. The Android bridge sends completed sessions to this record.</p>
+            <p>Samsung Health writes completed Galaxy Watch sleep after wake. The Android bridge sends completed sessions here.</p>
           </div>
         </div>
       </div>
@@ -251,6 +251,6 @@
     </section>
   </main>
 
-  <script src="./app.js?v=20260527-record-polish" defer></script>
+  <script src="./app.js?v=20260627-bridge-resync-v2" defer></script>
 </body>
 </html>

@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var endpointInput: EditText
     private lateinit var tokenInput: EditText
     private lateinit var statusText: TextView
+    private lateinit var autoStatusText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,7 @@ class MainActivity : ComponentActivity() {
         if (SleepBridgeSync.token(this).isNotBlank()) {
             ensureAutoSync("Auto sync scheduled from saved bridge token.")
         }
+        renderAutoStatus()
     }
 
     private fun buildUi(): View {
@@ -108,12 +110,26 @@ class MainActivity : ComponentActivity() {
             setOnClickListener { syncSleep(days = 60) }
         })
 
+        root.addView(Button(this).apply {
+            text = "Reschedule auto sync"
+            setOnClickListener {
+                ensureAutoSync("Auto sync rescheduled. Immediate sync queued.")
+            }
+        })
+
         statusText = TextView(this).apply {
             text = "Waiting."
             textSize = 14f
             setPadding(0, padding, 0, 0)
         }
         root.addView(statusText)
+
+        autoStatusText = TextView(this).apply {
+            text = "Auto sync not scheduled yet."
+            textSize = 13f
+            setPadding(0, padding / 2, 0, 0)
+        }
+        root.addView(autoStatusText)
 
         return ScrollView(this).apply { addView(root) }
     }
@@ -143,6 +159,7 @@ class MainActivity : ComponentActivity() {
             SleepBridgeSync.queueImmediateSync(this)
         }
         setStatus(message)
+        renderAutoStatus()
         return true
     }
 
@@ -178,13 +195,16 @@ class MainActivity : ComponentActivity() {
                 requestPermissions.launch(permissions)
                 return@launch
             }
-            if (!granted.contains(SleepBridgeSync.backgroundPermission)) {
+            val hasBackgroundAccess = granted.contains(SleepBridgeSync.backgroundPermission)
+            if (!hasBackgroundAccess) {
+                setStatus("Background Health Connect permission required for automatic sync. Grant it when Android opens permissions. Manual sync will still run now.")
                 requestPermissions.launch(permissions)
+            } else {
+                ensureAutoSync(
+                    "Auto sync scheduled. Android will check periodically after Samsung Health writes sleep to Health Connect.",
+                    queueImmediate = false
+                )
             }
-            ensureAutoSync(
-                "Auto sync scheduled. Android will check periodically after Samsung Health writes sleep to Health Connect.",
-                queueImmediate = false
-            )
 
             try {
                 val payload = withContext(Dispatchers.IO) { readSleepPayload(client, days) }
@@ -196,8 +216,12 @@ class MainActivity : ComponentActivity() {
 
                 setStatus("Sending $accepted sleep session(s).")
                 val response = withContext(Dispatchers.IO) { postPayload(endpoint, token, payload) }
-                ensureAutoSync("Manual sync accepted. Auto sync is scheduled for future nights.", queueImmediate = false)
-                setStatus(response)
+                if (hasBackgroundAccess) {
+                    ensureAutoSync("Manual sync accepted. Auto sync is scheduled for future nights.", queueImmediate = false)
+                    setStatus(response)
+                } else {
+                    setStatus("$response\nBackground Health Connect permission still required for automatic sync.")
+                }
             } catch (error: Exception) {
                 setStatus("Sync failed: ${error.message ?: error.javaClass.simpleName}")
             }
@@ -291,5 +315,19 @@ class MainActivity : ComponentActivity() {
 
     private fun setStatus(message: String) {
         statusText.text = message
+        if (::autoStatusText.isInitialized) {
+            renderAutoStatus()
+        }
+    }
+
+    private fun renderAutoStatus() {
+        if (!::autoStatusText.isInitialized) return
+        val status = SleepBridgeSync.lastAutoStatus(this)
+        val at = SleepBridgeSync.lastAutoStatusAt(this)
+        autoStatusText.text = when {
+            status.isBlank() -> "Auto sync not scheduled yet."
+            at.isBlank() -> status
+            else -> "$status\n$at"
+        }
     }
 }

@@ -8,6 +8,7 @@ import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -30,6 +31,10 @@ object SleepBridgeSync {
     const val DEFAULT_ENDPOINT = "https://sleep.aolabs.io/api/ingest/sleep-sessions"
     const val PREFS_NAME = "sleep-bridge"
     const val AUTO_WORK_NAME = "sleep-auto-sync"
+    const val IMMEDIATE_WORK_NAME = "sleep-immediate-sync"
+    const val AUTO_SYNC_LOOKBACK_DAYS = 35
+    const val LAST_AUTO_SYNC_STATUS = "lastAutoSyncStatus"
+    const val LAST_AUTO_SYNC_AT = "lastAutoSyncAt"
 
     val sleepPermission: String = HealthPermission.getReadPermission(SleepSessionRecord::class)
     val backgroundPermission: String = HealthPermission.PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND
@@ -43,6 +48,8 @@ object SleepBridgeSync {
     fun token(context: Context): String =
         prefs(context).getString("token", "")?.trim().orEmpty()
 
+    fun hasToken(context: Context): Boolean = token(context).isNotBlank()
+
     fun saveSettings(context: Context, endpoint: String, token: String) {
         prefs(context)
             .edit()
@@ -52,6 +59,7 @@ object SleepBridgeSync {
     }
 
     fun scheduleAutoSync(context: Context) {
+        val appContext = context.applicationContext
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -59,22 +67,59 @@ object SleepBridgeSync {
             .setConstraints(constraints)
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 15, TimeUnit.MINUTES)
             .build()
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+        WorkManager.getInstance(appContext).enqueueUniquePeriodicWork(
             AUTO_WORK_NAME,
             ExistingPeriodicWorkPolicy.UPDATE,
             periodic
         )
+        saveAutoStatus(appContext, "Auto sync scheduled.")
     }
 
     fun queueImmediateSync(context: Context) {
+        val appContext = context.applicationContext
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
         val oneTime = OneTimeWorkRequestBuilder<SleepSyncWorker>()
             .setConstraints(constraints)
             .build()
-        WorkManager.getInstance(context).enqueue(oneTime)
+        WorkManager.getInstance(appContext).enqueueUniqueWork(
+            IMMEDIATE_WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            oneTime
+        )
     }
+
+    fun ensureAutoSyncFromSystem(context: Context, reason: String) {
+        val appContext = context.applicationContext
+        if (!hasToken(appContext)) {
+            saveAutoStatus(appContext, "Auto sync waiting for bridge token after $reason.")
+            return
+        }
+        scheduleAutoSync(appContext)
+        queueImmediateSync(appContext)
+        saveAutoStatus(appContext, "Auto sync rescheduled after $reason.")
+    }
+
+    fun saveAutoStatus(context: Context, message: String) {
+        prefs(context.applicationContext)
+            .edit()
+            .putString(LAST_AUTO_SYNC_STATUS, message)
+            .putString(LAST_AUTO_SYNC_AT, Instant.now().toString())
+            .apply()
+    }
+
+    fun lastAutoStatus(context: Context): String =
+        prefs(context)
+            .getString(LAST_AUTO_SYNC_STATUS, "")
+            ?.trim()
+            .orEmpty()
+
+    fun lastAutoStatusAt(context: Context): String =
+        prefs(context)
+            .getString(LAST_AUTO_SYNC_AT, "")
+            ?.trim()
+            .orEmpty()
 
     suspend fun sync(context: Context, days: Int): SyncResult {
         val endpoint = endpoint(context)

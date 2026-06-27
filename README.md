@@ -6,6 +6,8 @@ The sleep log is the root surface at `/`. It auto-refreshes while open and reads
 
 Android bridge download: `https://sleep.aolabs.io/downloads/sleep-bridge.apk`
 
+Current Android bridge: `0.3.0`. It reschedules automatic sync after phone boot or bridge app update and uses a 35-day automatic lookback so missed background runs can heal.
+
 ## Data path
 
 Samsung Health on the paired phone writes completed Galaxy Watch sleep to Health Connect after the watch data has transferred and processed. The Android bridge in `connectors/health-connect-bridge` requests Health Connect sleep permission, reads `SleepSessionRecord` records, and posts timing plus stage intervals to the Sleep API.

@@ -10,13 +10,13 @@ class SleepSyncWorker(
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
     override suspend fun doWork(): Result {
-        if (SleepBridgeSync.token(applicationContext).isBlank()) {
+        if (!SleepBridgeSync.hasToken(applicationContext)) {
             saveStatus("Auto sync waiting for bridge token.")
             return Result.success()
         }
 
         return try {
-            val result = SleepBridgeSync.sync(applicationContext, days = 7)
+            val result = SleepBridgeSync.sync(applicationContext, days = SleepBridgeSync.AUTO_SYNC_LOOKBACK_DAYS)
             saveStatus("Auto sync ${Instant.now()}: ${result.accepted} session(s).")
             Result.success()
         } catch (error: Exception) {
@@ -34,9 +34,6 @@ class SleepSyncWorker(
     }
 
     private fun saveStatus(message: String) {
-        SleepBridgeSync.prefs(applicationContext)
-            .edit()
-            .putString("lastAutoSyncStatus", message)
-            .apply()
+        SleepBridgeSync.saveAutoStatus(applicationContext, message)
     }
 }

@@ -4,6 +4,8 @@ Android bridge for sending Samsung Health / Galaxy Watch sleep records to `sleep
 
 Download the current debug APK from `https://sleep.aolabs.io/downloads/sleep-bridge.apk`.
 
+Current APK: `0.3.0`.
+
 ## What it does
 
 - Requests Health Connect `READ_SLEEP` and background read access.
@@ -11,6 +13,8 @@ Download the current debug APK from `https://sleep.aolabs.io/downloads/sleep-bri
 - Posts session timing, source package, and stage intervals to the Sleep API.
 - Stores only the endpoint and bridge token locally on the phone.
 - Schedules Android background sync automatically after the bridge token and Health Connect permissions are in place.
+- Reschedules automatic sync after phone boot and bridge app updates.
+- Uses a 35-day automatic lookback so missed background runs heal without dropping older recent nights.
 
 Samsung Health must be connected to Health Connect first. Watch sleep appears after the watch transfers data to the paired phone and Samsung Health finishes processing it.
 
@@ -29,8 +33,9 @@ The bridge needs a real Android phone. Health Connect and Samsung Health Data SD
    - endpoint: `https://sleep.aolabs.io/api/ingest/sleep-sessions`
    - token: Railway `SLEEP_INGEST_TOKEN`
 5. Tap `Grant sleep permission` and include background Health Connect access when Android offers it. The bridge saves the token, schedules background sync, and queues an immediate sync after permission is granted.
-6. Leave the bridge installed. Android will periodically check for completed sleep records after Samsung Health writes them to Health Connect.
-7. `Sync last 14 days` and `Sync last 60 days` remain available for manual backfill when Samsung Health has a record that has not reached the website yet.
+6. Tap `Reschedule auto sync` after installing an update or changing Android battery/permission settings.
+7. Leave the bridge installed. Android will periodically check for completed sleep records after Samsung Health writes them to Health Connect, and the bridge reschedules itself after phone boot or app update.
+8. `Sync last 14 days` and `Sync last 60 days` remain available for manual backfill when Samsung Health has a record that has not reached the website yet.
 
 ## Notes
 

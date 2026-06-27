@@ -405,6 +405,29 @@ function recordSignature(data) {
   });
 }
 
+function displayedNights(data) {
+  return [...(data.nights || [])]
+    .filter(isDisplayedNight)
+    .sort((a, b) => b.sleepDate.localeCompare(a.sleepDate));
+}
+
+function latestDisplayedNight(data) {
+  return displayedNights(data)[0] || null;
+}
+
+function syncGapDays(data) {
+  const latest = latestDisplayedNight(data);
+  if (!latest?.sleepDate) return 0;
+  const today = new Date(`${localDateKey()}T12:00:00`);
+  const latestDay = new Date(`${latest.sleepDate}T12:00:00`);
+  if (Number.isNaN(today.getTime()) || Number.isNaN(latestDay.getTime())) return 0;
+  return Math.max(0, Math.round((today.getTime() - latestDay.getTime()) / 86_400_000));
+}
+
+function shouldShowBridgeAction(data) {
+  return syncGapDays(data) >= 2;
+}
+
 function currentSyncGap(data) {
   const nights = [...(data.nights || [])]
     .filter(isDisplayedNight)
@@ -414,9 +437,11 @@ function currentSyncGap(data) {
 
   const latestDate = formatNightDate(latest.sleepDate);
   const todayKey = localDateKey();
+  const gapDays = syncGapDays(data);
   const missingToday = latest.sleepDate < todayKey ? `No ${formatNightDate(todayKey)} upload yet. ` : "";
+  const staleBridge = gapDays >= 2 ? `No newer bridge upload for ${gapDays} days. ` : missingToday;
   const bridgeTime = data.lastCapturedAt ? `Phone bridge last sent ${formatDateTime(data.lastCapturedAt)}.` : "No phone bridge upload time available.";
-  return `${missingToday}Latest uploaded night is ${latestDate}. ${bridgeTime}`;
+  return `${staleBridge}Latest uploaded night is ${latestDate}. ${bridgeTime}`;
 }
 
 function setRefreshState(label, busy = false, reset = false) {
@@ -440,7 +465,7 @@ function renderRecordBoundary(message, detail = "") {
   recordContent.innerHTML = `
     <div class="record-boundary" role="status">
       <strong>${message}</strong>
-      <p>${detail || "No synced nights yet. After Samsung Health writes a completed Galaxy Watch sleep session to Health Connect, the Android bridge sends it here."}</p>
+      <p>${detail || "No synced nights yet. Install the Android bridge, grant background sleep access, then sync."}</p>
     </div>
   `;
 }
@@ -642,14 +667,14 @@ async function loadRecord(options = {}) {
       if (bridgeInstall) bridgeInstall.hidden = false;
       recordState.textContent = "No synced sleep sessions yet.";
       if (!silent) {
-        recordUpdated.textContent = manual ? `Checked ${formatTime(new Date().toISOString())}. No synced nights yet.` : "Waiting for first bridge sync.";
+        recordUpdated.textContent = manual ? `Checked ${formatTime(new Date().toISOString())}. No synced nights yet.` : "Waiting for bridge.";
       }
       renderRecordBoundary("No Health Connect records yet.");
       if (!silent) setRefreshState(manual ? "Checked" : "Refresh", false, manual);
       return;
     }
 
-    if (bridgeInstall) bridgeInstall.hidden = true;
+    if (bridgeInstall) bridgeInstall.hidden = !shouldShowBridgeAction(data);
     recordState.textContent = currentSyncGap(data) || "May 2026 onward.";
     if (manual || (silent && changed)) {
       const checkedAt = formatTime(new Date().toISOString());

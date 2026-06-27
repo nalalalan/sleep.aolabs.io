@@ -3028,3 +3028,125 @@ body.is-reading-record {
     line-height: 1.18;
   }
 }
+
+.is-reading-record .record-shell {
+  width: min(1280px, calc(100vw - 20px));
+  box-sizing: border-box;
+}
+
+.is-reading-record .bridge-install {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 16px;
+  align-items: center;
+  align-self: start;
+  max-width: none;
+  min-height: 0;
+  height: auto;
+  margin-bottom: 18px;
+  padding: 16px;
+}
+
+.is-reading-record .bridge-install-copy,
+.is-reading-record .record-toolbar span {
+  min-width: 0;
+}
+
+.is-reading-record .bridge-install h2 {
+  margin: 0 0 4px;
+  color: #172321;
+  font-size: clamp(16px, 1.9vh, 18px);
+}
+
+.is-reading-record .bridge-install p {
+  color: rgba(16, 33, 31, .68);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.is-reading-record .bridge-download {
+  min-height: 38px;
+  padding: 0 18px;
+  border: 1px solid rgba(22, 42, 38, .16);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fffdf4, #e7eee8);
+  color: #10211f;
+  box-shadow:
+    0 12px 28px rgba(27, 40, 36, .12),
+    0 1px 0 rgba(255, 255, 255, .86) inset;
+}
+
+.is-reading-record .bridge-steps {
+  gap: 10px 14px;
+  color: rgba(16, 33, 31, .54);
+}
+
+.is-reading-record .bridge-steps span {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+}
+
+@media (max-width: 680px) {
+  html:has(body.is-reading-record),
+  body.is-reading-record {
+    overflow-x: hidden;
+  }
+
+  .is-reading-record .record-section {
+    width: 100%;
+    padding: 10px;
+    overflow-x: hidden;
+  }
+
+  .is-reading-record .record-shell {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px);
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 14px;
+    overflow: hidden;
+  }
+
+  .is-reading-record .record-head {
+    padding-right: 76px;
+  }
+
+  .is-reading-record .record-head h1 {
+    font-size: 33px;
+  }
+
+  .is-reading-record .record-toolbar {
+    position: static;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .is-reading-record .record-toolbar span {
+    max-width: none;
+    text-align: right;
+  }
+
+  .is-reading-record .bridge-install {
+    grid-template-columns: 1fr;
+  }
+
+  .is-reading-record .bridge-download {
+    width: 100%;
+  }
+
+  .is-reading-record .bridge-install p,
+  .is-reading-record .record-boundary p {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .is-reading-record .record-content {
+    grid-template-rows: auto;
+  }
+}
