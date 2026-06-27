@@ -3098,17 +3098,22 @@ body.is-reading-record {
 
   .is-reading-record .record-section {
     width: 100%;
+    height: auto;
+    min-height: 100svh;
     padding: 10px;
+    align-items: flex-start;
     overflow-x: hidden;
   }
 
   .is-reading-record .record-shell {
+    display: block;
     width: calc(100vw - 20px) !important;
     max-width: calc(100vw - 20px);
     min-width: 0;
+    height: auto;
     box-sizing: border-box;
     padding: 14px;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .is-reading-record .record-head {
@@ -3147,6 +3152,15 @@ body.is-reading-record {
   }
 
   .is-reading-record .record-content {
+    display: grid;
+    grid-template-columns: 1fr;
     grid-template-rows: auto;
+    height: auto;
+    gap: 24px;
+  }
+
+  .is-reading-record .record-chart,
+  .is-reading-record .record-list {
+    overflow: visible;
   }
 }
